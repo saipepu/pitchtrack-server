@@ -1,0 +1,60 @@
+@startuml Pitchtrack
+
+skinparam style strictuml
+skinparam DefaultFontName Arial
+
+object Preset {
+  id: 1,
+  title: 'Preset 1',
+  description: 'This is a preset',
+  date: '2021-01-01',
+  monitorId: 1,
+}
+
+object Monitor {
+  id: 1,
+  name: 'John Doe',
+  phone: '1234567890',
+  email: 'email@gmail.com'
+}
+
+object Slot1 {
+  id: 1,
+  title: 'Slot 1',
+  description: 'This is a slot',
+  speaker: 'Speaker 1',
+  startTime: '09:00',
+  duration: '01:00',
+  endTime: '10:00',
+  message: 'This is a message',
+  warningTime: '00:10',
+  dangerTime: '00:05',
+  sortOrder: '1',
+  status: SlotStatus.pending,
+  endAction: EndAction.stop,
+  presetId: 1,
+}
+
+object Slot2 {
+  id: 1,
+  title: 'Slot 1',
+  description: 'This is a slot',
+  speaker: 'Speaker 1',
+  startTime: '09:00',
+  duration: '01:00',
+  endTime: '10:00',
+  message: 'This is a message',
+  warningTime: '00:10',
+  dangerTime: '00:05',
+  sortOrder: '1',
+  status: SlotStatus.pending,
+  endAction: EndAction.stop,
+  presetId: 1,
+}
+
+
+Preset::monitor --> Monitor : Belong to
+Slot1::presetId --> Preset : Belong to
+Slot2::presetId --> Preset : Belong to
+
+@enduml
