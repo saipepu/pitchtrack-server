@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrganizerSchema } from './organizer/organizer.schema';
 import { ChatGateway } from './chat.gateway';
+import { TimerGateWay } from './timer.gateway';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { ChatGateway } from './chat.gateway';
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService, ChatGateway, TimerGateWay],
 })
 export class AppModule {}

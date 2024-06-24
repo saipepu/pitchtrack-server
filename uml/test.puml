@@ -1,19 +1,19 @@
 @startuml
-' testdot
-skinparam style strictuml
-skinparam DefaultFontName Arial
 
-class "Monitor" as Monitor {
+object "Monitor" as Monitor {
   id: string
   name: string
   email: string
   phone: string
 }
 
-class "Preset" as Preset {
+object "Preset" as Preset {
   id: string
   name: string
   description: string
   monitor: Monitor
 }
+
+Preset::monitor --> Monitor : Belong to
+
 @enduml
