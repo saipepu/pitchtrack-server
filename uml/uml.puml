@@ -3,58 +3,55 @@
 skinparam style strictuml
 skinparam DefaultFontName Arial
 
-object Preset {
-  id: 1,
-  title: 'Preset 1',
-  description: 'This is a preset',
-  date: '2021-01-01',
-  monitorId: 1,
-}
-
-object Monitor {
-  id: 1,
-  name: 'John Doe',
-  phone: '1234567890',
-  email: 'email@gmail.com'
-}
-
-object Slot1 {
-  id: 1,
-  title: 'Slot 1',
-  description: 'This is a slot',
-  speaker: 'Speaker 1',
-  startTime: '09:00',
-  duration: '01:00',
-  endTime: '10:00',
+object Slot {
+  _id: string,
+  title: string,
+  speaker: string,
+  notes: string,
+  startType: Manual | Auto,
+  startDate: dd-mm-yyyy,
+  startTime: hh:mm,
+  endTime: hh:mm,
+  duration: hh:mm:ss,
+  appearance: CountDown | CountUp,
   message: 'This is a message',
-  warningTime: '00:10',
-  dangerTime: '00:05',
-  sortOrder: '1',
-  status: SlotStatus.pending,
-  endAction: EndAction.stop,
-  presetId: 1,
+  warningTime: mm:ss,
+  dangerTime: mm:ss,
+  warningColor: string,
+  dangerColor: string,
+  warningSound: string,
+  dangerSound: string,
+  flash: boolean,
+  flashCount: number,
+  sortOrder: 1,
+  status: Active | Inactive,
+  startCountAt: hh:mm:ss,
+  event: Event.object.ref,
 }
 
-object Slot2 {
-  id: 1,
-  title: 'Slot 1',
-  description: 'This is a slot',
-  speaker: 'Speaker 1',
-  startTime: '09:00',
-  duration: '01:00',
-  endTime: '10:00',
-  message: 'This is a message',
-  warningTime: '00:10',
-  dangerTime: '00:05',
-  sortOrder: '1',
-  status: SlotStatus.pending,
-  endAction: EndAction.stop,
-  presetId: 1,
+object Event {
+  title: string,
+  isrunning: boolean,
+  user: User.object.ref,
+  slots: [Slot.object.ref],
+  messages: [Message.object.ref],
 }
 
+object Message {
+  message: string,
+  color: White | Green | Red,
+  weight: Normal | Bold,
+  cap: Boolean,
+  event: Event.object.ref,
+}
 
-Preset::monitor --> Monitor : Belong to
-Slot1::presetId --> Preset : Belong to
-Slot2::presetId --> Preset : Belong to
+object User {
+  _id: ObjectId,
+  name: string,
+  email: string,
+  password: string,
+  role: Organizer | Speaker,
+  events: [Event.object.ref]
+}
 
 @enduml
