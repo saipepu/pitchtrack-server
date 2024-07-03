@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { OrganizerSchema } from './organizer/organizer.schema';
 import { ChatGateway } from './chat.gateway';
 import { TimerGateWay } from './timer.gateway';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TimerGateWay } from './timer.gateway';
     MongooseModule.forFeature([
       { name: 'Organizer', schema: OrganizerSchema },
     ]),
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, TimerGateWay],

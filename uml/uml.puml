@@ -9,8 +9,9 @@ object Slot {
   speaker: string,
   notes: string,
   startType: Manual | Auto,
-  startTime: hh:mm,
   startDate: dd-mm-yyyy,
+  startTime: hh:mm,
+  endTime: hh:mm,
   duration: hh:mm:ss,
   appearance: CountDown | CountUp,
   message: 'This is a message',
@@ -25,11 +26,15 @@ object Slot {
   sortOrder: 1,
   status: Active | Inactive,
   startCountAt: hh:mm:ss,
-  eventId: ObjectId
+  event: Event.object.ref,
 }
 
 object Event {
   title: string,
+  isrunning: boolean,
+  user: User.object.ref,
+  slots: [Slot.object.ref],
+  messages: [Message.object.ref],
 }
 
 object Message {
@@ -37,8 +42,7 @@ object Message {
   color: White | Green | Red,
   weight: Normal | Bold,
   cap: Boolean,
-  eventId: ObjectId,
-  OrganizerId: ObjectId
+  event: Event.object.ref,
 }
 
 object User {
@@ -47,7 +51,7 @@ object User {
   email: string,
   password: string,
   role: Organizer | Speaker,
-  eventId: ObjectId
+  events: [Event.object.ref]
 }
 
 @enduml
