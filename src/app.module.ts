@@ -14,7 +14,8 @@ import { EventsModule } from './events/events.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    // MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot("mongodb+srv://user:AgbeA4N2lkcyBdKS@cluster.ctv8fgc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster"), 
     MongooseModule.forFeature([
       { name: 'Organizer', schema: OrganizerSchema },
     ]),
