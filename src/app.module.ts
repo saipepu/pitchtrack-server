@@ -7,6 +7,7 @@ import { OrganizerSchema } from './organizer/organizer.schema';
 import { ChatGateway } from './chat.gateway';
 import { TimerGateWay } from './timer.gateway';
 import { EventsModule } from './events/events.module';
+import { SlotsModule } from './slots/slots.module';
 
 @Module({
   imports: [
@@ -14,12 +15,12 @@ import { EventsModule } from './events/events.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    // MongooseModule.forRoot(process.env.MONGO_URI),
-    MongooseModule.forRoot("mongodb+srv://user:AgbeA4N2lkcyBdKS@cluster.ctv8fgc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster"), 
+    MongooseModule.forRoot(process.env.MONGO_URI),
     MongooseModule.forFeature([
       { name: 'Organizer', schema: OrganizerSchema },
     ]),
     EventsModule,
+    SlotsModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, TimerGateWay],
