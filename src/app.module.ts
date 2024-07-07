@@ -8,6 +8,7 @@ import { ChatGateway } from './chat.gateway';
 import { TimerGateWay } from './timer.gateway';
 import { EventsModule } from './events/events.module';
 import { SlotsModule } from './slots/slots.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SlotsModule } from './slots/slots.module';
     ]),
     EventsModule,
     SlotsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, TimerGateWay],

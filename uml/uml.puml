@@ -26,15 +26,14 @@ object Slot {
   sortOrder: 1,
   status: Active | Inactive,
   startCountAt: hh:mm:ss,
-  event: Event.object.ref,
 }
 
 object Event {
   title: string,
   isrunning: boolean,
   user: User.object.ref,
-  slots: [Slot.object.ref],
-  messages: [Message.object.ref],
+  slots: [Slot._id],
+  messages: [Message._id],
 }
 
 object Message {
@@ -42,7 +41,6 @@ object Message {
   color: White | Green | Red,
   weight: Normal | Bold,
   cap: Boolean,
-  event: Event.object.ref,
 }
 
 object User {
@@ -51,7 +49,7 @@ object User {
   email: string,
   password: string,
   role: Organizer | Speaker,
-  events: [Event.object.ref]
+  events: [Event._id]
 }
 
 @enduml
