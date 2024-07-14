@@ -1,0 +1,51 @@
+
+GET http://localhost:8080/slots
+
+###
+
+POST http://localhost:8080/slots
+content-type: application/json
+
+{
+    "title": "ABC",
+    "speaker": "Hello",
+    "notes": "Hello world",
+    "appearance": "countdow",
+    "startTimeType": "scheduled",
+    "startDate": "22-JUL-2024",
+    "startTime": "14:00",
+    "durationTime": "2:30:10"
+}
+
+###
+
+PUT http://localhost:8080/slots/6693c584507d5bef69790f8e
+content-type: application/json
+
+{
+    "appearance": "countdown",
+    "startTimeType": "schedu"
+}
+
+###
+
+DELETE http://localhost:8080/slots
+
+###
+
+GET http://localhost:8080/events
+
+###
+
+POST http://localhost:8080/events HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Hello"
+}
+
+###
+
+DELETE http://localhost:8080/events
+
+###

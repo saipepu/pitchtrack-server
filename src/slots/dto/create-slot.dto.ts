@@ -1,6 +1,12 @@
+import { Appearance, StartTimeType } from "../enums/slot";
 
 export class CreateSlotDto {
     readonly title: string;
-    readonly startTime: Date;
-    readonly duration: Number;
+    readonly speaker: string;
+    readonly notes: string;
+    readonly appearance: Appearance;
+    readonly startTimeType: StartTimeType;
+    readonly startDate: Date;
+    readonly startTime: string;
+    readonly durationTime: string;
 }
