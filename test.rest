@@ -10,7 +10,7 @@ content-type: application/json
     "title": "ABC",
     "speaker": "Hello",
     "notes": "Hello world",
-    "appearance": "countdow",
+    "appearance": "countdown",
     "startTimeType": "scheduled",
     "startDate": "22-JUL-2024",
     "startTime": "14:00",
