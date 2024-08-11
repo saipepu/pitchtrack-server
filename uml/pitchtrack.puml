@@ -1,0 +1,72 @@
+@startuml Pitchtrack
+
+skinparam style strictuml
+skinparam DefaultFontName Arial
+
+entity Slot {
+  * _id: ObjectId
+  * title: String
+  * speaker: String
+  * notes: String
+  * startType: StartType
+  * startDate: DateOnly
+  * startTime: String <<time>>
+  * duration: String <<time>>
+  * appearance: Appearance
+}
+
+entity User {
+  * _id: ObjectId
+  * name: String
+  * email: String <<email>>
+  * password: String
+  * role: Role
+  * events: Array<Event>
+}
+
+entity Event {
+  * _id: ObjectId
+  * title: String
+  * slots: Array<Slot>
+  * messages: Array<Message>
+}
+
+entity Message {
+  * _id: ObjectId
+  * name: String
+  * color: MessageColor
+  * weight: MessageWeight
+  * isCap: Boolean
+}
+
+enum StartType {
+  MANUAL
+  SCHEDULED
+}
+
+enum Appearance {
+  COUNTDOWN
+  COUNTUP
+}
+
+enum Role {
+  ORGANIZER
+  SPEAKER
+}
+
+enum MessageColor {
+  WHITE
+  GREEN
+  RED
+}
+
+enum MessageWeight {
+  NORMAL
+  BOLD
+}
+
+Event ||--o Slot : has
+Event ||--o Message : has
+User ||--o Event : has
+
+@enduml
