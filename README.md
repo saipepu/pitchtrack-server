@@ -1,73 +1,106 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Pitchtrack (Backend)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A feature-rich clone of [StageTimer.io](https://stagetimer.io), built as a senior project. This application replicates the core functionalities of StageTimer.io, including premium features, using Nest.js, MongoDB, and deployed on Microsoft Azure.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Customizable Timers:** Create and manage multiple timers with adjustable settings.
+- **Countdowns:** Set up and monitor countdowns for events, deadlines, or other activities.
+- **Visual and Audio Alerts:** Receive notifications through visual and audio alerts when timers expire or reach specific intervals.
+- **User Authentication:** Secure user accounts with registration and login functionality.
+- **Premium Features:** Includes exclusive features available in StageTimer.io’s premium version.
+- **Responsive Design:** Optimized for use on various devices including desktops, tablets, and smartphones.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Technologies Used
 
-## Installation
+- **Backend:** Nest.js
+- **Database:** MongoDB
+- **Deployment:** Microsoft Azure
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or later)
+- MongoDB (Local or Atlas instance)
+- Azure CLI (For deployment)
+
+### Installation
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/saipepu/pitchtrack-server.git
+   cd pitchtrack-server
+   ```
+
+2. **Install Dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Setup Environment Variables:**
+
+   Create a `.env` file in the root directory and add the following variables:
+
+   ```env
+    MONGO_USER=
+    MONGO_PWD=
+    MONGO_URI=
+   ```
+
+4. **Run the Application Locally:**
+
+   ```bash
+   npm run start
+   ```
+
+   The application will start on `http://localhost:8080` by default.
+
+### Running Tests
+
+To run the test suite:
 
 ```bash
-$ npm install
+npm run test
 ```
 
-## Running the app
+### Building for Production
+
+To build the application for production:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run build
 ```
 
-## Test
+### Deployment
 
-```bash
-# unit tests
-$ npm run test
+1. **Setup Azure App Service:**
 
-# e2e tests
-$ npm run test:e2e
+   Follow the [Azure documentation](https://docs.microsoft.com/en-us/azure/app-service/quickstart-nodejs) to create and configure an Azure App Service.
 
-# test coverage
-$ npm run test:cov
-```
+2. **Deploy to Azure:**
 
-## Support
+   Use the Azure CLI to deploy the built application:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+   ```bash
+   az webapp up --name your-app-name --resource-group your-resource-group
+   ```
 
-## Stay in touch
+   Replace `your-app-name` and `your-resource-group` with your Azure configuration.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Usage
 
-## License
+Once deployed, you can access the application at `https://your-app-name.azurewebsites.net`. Users can sign up, log in, and start using the timer functionalities.
 
-Nest is [MIT licensed](LICENSE).
+## Contributing
+
+Feel free to fork the repository and submit pull requests. Contributions and feedback are welcome!
+
+## Acknowledgements
+
+- [StageTimer.io](https://stagetimer.io) for inspiration
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [Microsoft Azure Documentation](https://docs.microsoft.com/en-us/azure/)
