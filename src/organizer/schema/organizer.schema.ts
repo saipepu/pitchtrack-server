@@ -3,8 +3,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Document } from "mongoose";
 
 enum Role {
-  role = 'ROLE',
-  speaker = 'SPEAKER',
+  organizer = 'organizer',
+  speaker = 'speaker',
 }
 @Schema({
   timestamps: true,
@@ -20,9 +20,9 @@ export class Organizer extends Document {
 
   @ApiProperty({ example: 'password', description: 'Password' })
   @Prop({ required: [true, "password is required"] })
-  password: string;
+  hashedPassword: string;
 
-  @ApiProperty({ example: Role, description: 'Role' })
+  @ApiProperty({ example: Role.organizer, description: 'Role' })
   @Prop({ required: [true, "role is required"], default: "speaker" })
   role: Role;
 
