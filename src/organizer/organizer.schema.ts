@@ -1,12 +1,34 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
 import { Document } from "mongoose";
 
+enum Role {
+  role = 'ROLE',
+  speaker = 'SPEAKER',
+}
 @Schema({
-    timestamps: true,
+  timestamps: true,
 })
 export class Organizer extends Document {
-    @Prop({ required: [true, "name is required"] })
-    name: string;
+  @ApiProperty({ example: 'Sydny', description: 'Name' })
+  @Prop({ required: [true, "name is required"] })
+  name: string;
+
+  @ApiProperty({ example: 'JohnDoe@gmail.com', description: 'Email Address' })
+  @Prop({ required: [true, "email is required"], unique: true })
+  email: string;
+
+  @ApiProperty({ example: 'password', description: 'Password' })
+  @Prop({ required: [true, "password is required"] })
+  password: string;
+
+  @ApiProperty({ example: Role, description: 'Role' })
+  @Prop({ required: [true, "role is required"], default: "speaker" })
+  role: Role;
+
+  // eventid list
+  @Prop({ type: [String], default: [] })
+  events: string[];
 }
 
 export const OrganizerSchema = SchemaFactory.createForClass(Organizer);
