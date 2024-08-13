@@ -15,9 +15,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Pitchtrack API')
-    .setDescription('Senior Project I Pitchtrack API description')
     .setVersion('1.0')
-    .addTag('swagger')
     .addBearerAuth(
       {
         type: 'http',
@@ -36,7 +34,7 @@ async function bootstrap() {
     {
       jsonDocumentUrl: 'swagger-json',
       swaggerOptions: {
-        // tagsSorter: 'alpha',
+        operationsSorter: 'method',
       }
     }
   );
