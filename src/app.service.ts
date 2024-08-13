@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Organizer } from './organizer/organizer.schema';
+import { Organizer } from './organizer/schema/organizer.schema';
 import mongoose from 'mongoose';
 
 @Injectable()
