@@ -4,7 +4,10 @@ import { CreateSlotDto } from './dto/create-slot.dto';
 import { UpdateSlotDto } from './dto/update-slot.dto';
 import { handleError, handleSuccess } from 'src/helpers/response.helper';
 
-@Controller('Slots')
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Slots')
+@Controller('slots')
 export class SlotController {
   constructor(private readonly SlotService: SlotService) {}
 
