@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
@@ -25,7 +26,7 @@ async function bootstrap() {
         description: 'Enter JWT token',
         in: 'header',
       },
-      'bearer-token', // This is the name of the security scheme
+      'bearer-token',
     )
     .build()
 
@@ -39,7 +40,7 @@ async function bootstrap() {
     }
   );
 
-  console.log('Initiating server on port 3000 . . .')
+  console.log('Initiating server on port 8080 . . .')
 
   await app.listen(8080);
 
