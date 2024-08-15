@@ -1,12 +1,12 @@
 
 
 export enum Appearance {
-    Countdown = "countdown",
-    Countup = "countup"
+    COUNTDOWN = "countdown",
+    COUNTUP = "countup"
 }
 
 
 export enum StartTimeType {
-    Manual = "manual",
-    Scheduled = "scheduled"
+    MANUAL = "manual",
+    SCHEDULED = "scheduled"
 }
