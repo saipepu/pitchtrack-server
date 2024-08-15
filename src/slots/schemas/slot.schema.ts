@@ -1,37 +1,29 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-
 import { Appearance, StartTimeType } from '../enums/slot';
-
-
-export type SlotDocument = HydratedDocument<Slot>;
 
 @Schema()
 export class Slot {
-  @Prop({ required: true, default: "Untitle" })
+  @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true, type: String, default: "Untitle" })
+  @Prop({ required: true })
   speaker: string;
 
-  @Prop({ required: true, type: String, default: "Untitle" })
+  @Prop({ required: true })
   notes: string;
 
-  @Prop({ required: true, type: String, enum: Appearance, default: Appearance.Countdown })
+  @Prop({ required: true })
   appearance: Appearance;
 
-  @Prop({ required: true, type: String, enum: StartTimeType, default: StartTimeType.Manual })
+  @Prop({ required: true })
   startTimeType: StartTimeType;
 
-  @Prop({ required: true, type: Date, default: Date.now })
-  startDate: Date;
+  @Prop({ required: true })
+  startTime: Date;
 
-  @Prop({ required: true, type: String, default: "14:30:30" })
-  startTime: string;
-
-  @Prop({ required: true, type: String, default: "10:00" })
-  durationTime: string;
+  @Prop({ required: true })
+  duration: string;
 }
 
 export const SlotSchema = SchemaFactory.createForClass(Slot);
