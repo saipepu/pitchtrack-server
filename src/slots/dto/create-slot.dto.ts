@@ -19,7 +19,6 @@ export class CreateSlotDto {
     @IsNotEmpty()
     readonly speaker: string;
 
-
     @ApiProperty({ 
         example: "Note1",
     })
@@ -35,7 +34,6 @@ export class CreateSlotDto {
     @IsNotEmpty()   
     readonly appearance: Appearance;
 
-
     @ApiProperty({ 
         example: StartTimeType.MANUAL,
         enum: StartTimeType
@@ -43,7 +41,6 @@ export class CreateSlotDto {
     @IsEnum(StartTimeType)  
     @IsNotEmpty()  
     readonly startTimeType: StartTimeType;
-
 
     @ApiProperty({ 
         example: "2024-08-15T12:40:40.000+07:00",

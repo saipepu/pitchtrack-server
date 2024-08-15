@@ -1,12 +1,4 @@
-import { Appearance, StartTimeType } from "../enums/slot";
+import { PartialType } from "@nestjs/swagger";
+import { CreateSlotDto } from "./create-slot.dto";
 
-export class UpdateSlotDto {
-    readonly title?: string;
-    readonly speaker?: string;
-    readonly notes?: string;
-    readonly appearance?: Appearance;
-    readonly startTimeType?: StartTimeType;
-    readonly startDate?: Date;
-    readonly startTime?: string;
-    readonly durationTime?: string;
-}
+export class UpdateSlotDto extends PartialType(CreateSlotDto) {}
