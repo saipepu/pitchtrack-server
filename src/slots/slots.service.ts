@@ -2,13 +2,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Slot, SlotDocument } from './schemas/slot.schema';
+import { Slot } from './schemas/slot.schema';
 import { CreateSlotDto } from './dto/create-slot.dto';
 import { UpdateSlotDto } from './dto/update-slot.dto';
 
 @Injectable()
 export class SlotService {
-  constructor(@InjectModel(Slot.name) private SlotModel: Model<SlotDocument>) {}
+  constructor(@InjectModel(Slot.name) private SlotModel: Model<Slot>) {}
 
   async create(createSlotDto: CreateSlotDto): Promise<Slot> {
     const createdSlot = new this.SlotModel(createSlotDto);
