@@ -3,11 +3,9 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
@@ -25,7 +23,6 @@ export class TransformInterceptor implements NestInterceptor {
 
     return {
       status: true,
-      statusCode,
       message: res,
     };
   }

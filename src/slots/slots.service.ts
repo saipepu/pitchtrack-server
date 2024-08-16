@@ -1,5 +1,5 @@
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Slot } from './schemas/slot.schema';
@@ -11,8 +11,7 @@ export class SlotService {
   constructor(@InjectModel(Slot.name) private SlotModel: Model<Slot>) {}
 
   async create(createSlotDto: CreateSlotDto): Promise<Slot> {
-    const createdSlot = new this.SlotModel(createSlotDto);
-    return createdSlot.save();
+    return new this.SlotModel(createSlotDto).save();
   }
 
   async findAll(): Promise<Slot[]> {
@@ -20,15 +19,31 @@ export class SlotService {
   }
 
   async findOne(id: string): Promise<Slot> {
-    return this.SlotModel.findById(id).exec();
+    try {
+      const model = await this.SlotModel.findById(id).exec()
+      return model;
+
+    } catch (error) {
+      throw new NotFoundException(`Model with ID ${id} not found`)
+    }
   }
 
   async update(id: string, updateSlotDto: UpdateSlotDto): Promise<Slot> {
-    return this.SlotModel.findByIdAndUpdate(id, updateSlotDto, { new: true }).exec();
+    try {
+      return await this.SlotModel.findByIdAndUpdate(id, updateSlotDto, { new: true }).exec();
+      
+    } catch (error) {
+      throw new NotFoundException(`Model with ID ${id} not found`)
+    }
   }
 
   async delete(id: string): Promise<Slot> {
-    return this.SlotModel.findByIdAndDelete(id).exec();
+    try {
+      return await this.SlotModel.findByIdAndDelete(id).exec();
+      
+    } catch (error) {
+      throw new NotFoundException(`Model with ID ${id} not found`)
+    }
   }
 
   async deleteall() {
