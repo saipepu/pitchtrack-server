@@ -1,6 +1,4 @@
+import { PartialType } from "@nestjs/swagger";
+import { CreateMessageDto } from "./create-message.dto";
 
-
-export class UpdateMessageDto {
-    readonly name: string;
-    readonly cap: Date;
-}
+export class UpdateMessageDto extends PartialType(CreateMessageDto) {}
