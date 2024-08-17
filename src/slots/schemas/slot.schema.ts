@@ -1,6 +1,6 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Appearance, StartTimeType } from '../enums/slot';
+import { Appearance, StartTimeType } from '../enums/slot.enums';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Schema()

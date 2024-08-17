@@ -1,4 +1,4 @@
-import { Appearance, StartTimeType } from "../enums/slot";
+import { Appearance, StartTimeType } from "../enums/slot.enums";
 import { IsDate, IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { Type } from 'class-transformer';
 import { IsDuration } from "src/validators/is-duration.validator";
