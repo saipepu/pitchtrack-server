@@ -1,16 +1,26 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-
-export type MessageDocument = HydratedDocument<Message>;
+import { MessageColor, MessageWeight } from '../enums/message.enums';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Schema()
 export class Message {
-  @Prop({ required: true, type: String, default: 'Untitle' })
+  @ApiProperty({ example: "Message1"})
+  @Prop({ required: true })
   name: string;
 
-  @Prop({ required: false, type: Boolean, default: true})
-  cap: boolean;
+  @ApiProperty({ example: "true"})
+  @Prop({ required: true, default: true })
+  isCap: boolean;
+
+  @ApiProperty({ example: MessageColor.GREEN, enum: MessageColor})
+  @Prop({ required: true })
+  color: MessageColor;
+
+  @ApiProperty({ example: MessageWeight.BOLD, enum: MessageWeight})
+  @Prop({ required: true})
+  weight: MessageWeight;
+
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);
