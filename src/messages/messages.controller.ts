@@ -46,4 +46,9 @@ export class MessagesController {
   deleteOne(@Param('id') id: string) {
     return this.MessageService.delete(id);
   }
+
+  // @Delete()
+  // delete() {
+  //   return this.MessageService.deleteall();
+  // }
 }
