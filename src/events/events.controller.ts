@@ -3,9 +3,11 @@ import { EventService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
+import { Event } from './schemas/event.schema';
 
+@ApiExtraModels(Event)
 @ApiTags('Events')
 @Controller('events')
 export class EventController {
@@ -46,8 +48,8 @@ export class EventController {
     return this.EventService.delete(id);
   }
 
-  // @Delete()
-  // delete() {
-  //   return this.EventService.deleteall();
-  // }
+  @Delete()
+  delete() {
+    return this.EventService.deleteall();
+  }
 }
