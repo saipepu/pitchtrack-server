@@ -7,12 +7,15 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
 import { SlotService } from 'src/slots/slots.service';
+import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
+import { MessagesService } from 'src/messages/messages.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(Event.name) private EventModel: Model<Event>,
     private readonly SlotsService: SlotService,
+    private readonly MessagesService: MessagesService,
   ) {}
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
@@ -21,11 +24,11 @@ export class EventService {
   }
 
   async findAll(): Promise<Event[]> {
-    return this.EventModel.find().populate('slots').exec();
+    return this.EventModel.find().populate(['slots', 'messages']).exec();
   }
 
   async findOne(id: string): Promise<Event> {
-    return this.EventModel.findById(id).exec();
+    return await this.EventModel.findById(id).populate(['slots', 'messages']).exec();
   }
 
   async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
@@ -39,7 +42,21 @@ export class EventService {
       id,
       { $push: { slots: slot }},
       { new: true }
-    ).exec();
+    ).populate(['slots', 'messages']).exec();
+
+    return events;
+  }
+
+  async addMessage(id: string, messageData: CreateMessageDto): Promise<Event> {
+    const message = await this.MessagesService.create(messageData);
+
+    console.log(message)
+
+    const events = await this.EventModel.findByIdAndUpdate(
+      id,
+      { $push: { messages: message }},
+      { new: true }
+    ).populate(['slots', 'messages']).exec();
 
     return events;
   }

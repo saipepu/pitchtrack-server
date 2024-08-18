@@ -4,6 +4,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 
 @ApiTags('Events')
 @Controller('events')
@@ -35,14 +36,18 @@ export class EventController {
     return this.EventService.addSlot(id, slot);
   }
 
-  // @Delete(':id')
-  // delete(@Param('id') id: string) {
-  //   return this.EventService.delete(id);
-  // }
-
-  @Delete()
-  delete() {
-    return this.EventService.deleteall();
+  @Post(':id/messages')
+  addMessage(@Param('id') id: string, @Body() message: CreateMessageDto) {
+    return this.EventService.addMessage(id, message);
   }
-  
+
+  @Delete(':id')
+  deleteOne(@Param('id') id: string) {
+    return this.EventService.delete(id);
+  }
+
+  // @Delete()
+  // delete() {
+  //   return this.EventService.deleteall();
+  // }
 }
