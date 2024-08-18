@@ -1,9 +1,6 @@
 
-import { Slot } from '../../slots/schemas/slot.schema'
+import { PartialType } from '@nestjs/swagger';
+import { CreateEventDto } from './create-event.dto';
 
-
-export class UpdateEventDto {
-    readonly name?: string;
-    readonly slots?: Slot[];
-  }
+export class UpdateEventDto extends PartialType(CreateEventDto) {}
   
