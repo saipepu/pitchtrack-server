@@ -22,7 +22,7 @@ export class TransformInterceptor implements NestInterceptor {
     const statusCode = response.statusCode;
 
     return {
-      status: true,
+      success: true,
       message: res,
     };
   }
