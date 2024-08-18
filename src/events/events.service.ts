@@ -36,11 +36,11 @@ export class EventService {
   }
 
   async addSlot(id: string, slotData: CreateSlotDto): Promise<Event> {
-    const slot = await this.SlotsService.create(slotData);
+    // const slot = await this.SlotsService.create(slotData);
 
     const events = await this.EventModel.findByIdAndUpdate(
       id,
-      { $push: { slots: slot }},
+      { $push: { slots: slotData }},
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
@@ -48,13 +48,11 @@ export class EventService {
   }
 
   async addMessage(id: string, messageData: CreateMessageDto): Promise<Event> {
-    const message = await this.MessagesService.create(messageData);
-
-    console.log(message)
+    // const message = await this.MessagesService.create(messageData);
 
     const events = await this.EventModel.findByIdAndUpdate(
       id,
-      { $push: { messages: message }},
+      { $push: { messages: messageData }},
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
