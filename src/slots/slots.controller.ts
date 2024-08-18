@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
 import { SlotService } from './slots.service';
 import { CreateSlotDto } from './dto/create-slot.dto';
 import { UpdateSlotDto } from './dto/update-slot.dto';
-import { ApiExtraModels, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Slot } from './schemas/slot.schema';
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from 'src/helpers/swagger.helper';
 
@@ -40,16 +40,16 @@ export class SlotController {
     return await this.SlotService.update(id, updateSlotDto);
   }
 
-  // @Delete()
-  // delete() {
-  //   return this.SlotService.deleteall();
-  // }
-
   @ApiResponse(ApiSuccessResponseHelper(Slot.name))
   @ApiResponse(ApiNotSucessResponseHelper())
   @Delete(':id')
   deleteOne(@Param('id') id: string) {
     return this.SlotService.delete(id);
   }
+
+  // @Delete()
+  // delete() {
+  //   return this.SlotService.deleteall();
+  // }
   
 }
