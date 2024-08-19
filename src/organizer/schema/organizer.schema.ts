@@ -18,7 +18,7 @@ export class Organizer extends Document {
 
   @ApiProperty({ example: 'password' })
   @Prop({ required: true })
-  hashedPassword: string;
+  password: string;
 
   @ApiProperty({ example: Role.ORGANIZER, enum: Role })
   @Prop({ required: true})

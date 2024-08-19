@@ -47,7 +47,7 @@ export class AuthService {
         return { success: false, message: "Organizer not found."}
       }
 
-      const isMatch = await bcrypt.compare(password, organizer.hashedPassword);
+      const isMatch = await bcrypt.compare(password, organizer.password);
 
       if (!isMatch) {
         return { success: false, message: "Invalid password."}
