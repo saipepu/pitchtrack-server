@@ -1,103 +1,38 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Organizer } from "./schema/organizer.schema";
-import mongoose, { Model } from "mongoose";
-import { Query } from 'express-serve-static-core'
-import { createOrganzierDto } from "./dto/createOrganizer.dto";
+import { Model } from "mongoose";
+import { CreateOrganzierDto } from "./dto/create-organizer.dto";
+import { UpdateOrgainzerDto } from "./dto/update-organizer.dto";
 
 @Injectable()
 export class OrganizerService {
-  constructor(
-    @InjectModel(Organizer.name)
-    private organizer: mongoose.Model<Organizer>,
-  ) {}
+  constructor(@InjectModel(Organizer.name) private OrganizerModel: Model<Organizer>) {}
 
-  // Get All Organizers
-  async findAll({ query }: { query?: Query }) {
-
-    const organizers = await this.organizer.find(query).populate('events');
-
-    return { success: true, message: organizers}
+  async create(createOrganzierDto: CreateOrganzierDto) {
+    const createdOrganizer = new this.OrganizerModel(createOrganzierDto);
+    return createdOrganizer.save();
   }
 
-  // Get Organizer By Id
+  async findAll() {
+    const organizers = await this.OrganizerModel.find().populate('events').exec();
+    return organizers;
+  }
+
   async findById(id: string) {
-    const organizer = await this.organizer.findById(id).populate('events');
-
-    return { success: true, message: organizer}
+    return await this.OrganizerModel.findById(id).populate('events').exec();
   }
 
-  // Get Organizer By Email
   async findByEmail(email: string) {
-    try {
-
-      const organizer = await this.organizer.findOne({ email: email }).populate('events');
-
-      if(!organizer) {
-        return { success: false, message: "Organizer not found."}
-      }
-      
-      return { success: true, message: organizer}
-
-    } catch(error) {
-
-      return { success: false, message: "Organizer not found."}
-
-    }
+    return await this.OrganizerModel.findOne({ email: email }).populate('events').exec();
   }
 
-  // Create Organizer
-  async createOrganizer(organizer: createOrganzierDto) {
-
-    try {
-
-      const organizerExist = await this.organizer.findOne({ email: organizer.email });
-
-      if (organizerExist) {
-        return { success: false, message: "Organizer already exist"}
-      }
-
-      const newOrganizer = await this.organizer.create(organizer);
-  
-      return { success: true, message: newOrganizer}
-
-    } catch (error) {
-
-      throw new BadRequestException({ success: false, error: "Fail to create new organizer."})
-
-    }
+  async updateOrganizer(id: string, updateOrgainzerDto: UpdateOrgainzerDto) {
+    return await this.OrganizerModel.findByIdAndUpdate(id, updateOrgainzerDto, {new: true}).exec();
   }
 
-  // Update Organizer
-  async updateOrganizer(id: string, organizer: createOrganzierDto) {
-   
-    try {
-        
-        const updatedOrganizer = await this.organizer.findByIdAndUpdate(id, organizer, {
-          new: true,
-          runValidators: true,
-        });
-
-        return { success: true, message: updatedOrganizer}
-
-    } catch (error) {
-        
-          throw new BadRequestException({ success: false, error: "Fail to update organizer."})
-  
-    }
-  }
-
-  // Delete Organizer
   async deleteOrganizer(id: string) {
-    try {
-
-      await this.organizer.findByIdAndDelete(id);
-
-      return { success: true, message: "Organizer deleted successfully."}
-
-    } catch (error) {
-      throw new BadRequestException({ success: false, error: "Fail to delete organizer."})
-    }
+    return await this.OrganizerModel.findByIdAndDelete(id).exec();
   }
 
 }
