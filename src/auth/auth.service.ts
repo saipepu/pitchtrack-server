@@ -21,7 +21,7 @@ export class AuthService {
       const { password } = body;
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newOrganizer = await this.organizerService.createOrganizer({
+      const newOrganizer = await this.organizerService.create({
         ...body, hashedPassword: hashedPassword
       });
 

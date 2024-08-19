@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { createOrganzierDto } from 'src/organizer/dto/createOrganizer.dto';
 import { signInDto } from './dto/signIn.dto';
+import { CreateOrganzierDto } from 'src/organizer/dto/create-organizer.dto';
 
 @ApiTags('Auth')
 @Controller('')
@@ -16,7 +16,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Sign Up Url for Organizers' })
   async signIn(
     @Body()
-    body: createOrganzierDto
+    body: CreateOrganzierDto
   ) {
     return this.authService.signUp(body);
   }
