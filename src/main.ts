@@ -42,6 +42,7 @@ async function bootstrap() {
 
   console.log('Initiating server on port 8080 . . .')
 
+  app.enableCors();
   await app.listen(8080);
 
 }

@@ -1,0 +1,39 @@
+This is a stagetimer clone.
+It is a simple timer that can be used to time the duration of a stage in a process.
+
+These are different scenarios for end to end testing of the timer.
+
+Any Account Type Registration:
+1. Sign Up
+2. Sign In
+3. Sign Out
+
+Event:
+1. Create Event
+2. Edit Event
+  
+  Slot:
+  1. Create Slot
+  2. Edit Slot
+  3. Start Slot ( Check for socket connection )
+  4. Pause Slot ( Check for socket connection )
+  5. Resume Slot ( Check for socket connection )
+  6. Delete Slot ( Check for socket connection )
+
+  Message:
+  1. Create Message
+  2. Edit Message ( Check for socket connection )
+  3. Display Message ( Check for socket connection )
+  4. Hide Message ( Check for socket connection )
+  5. Delete Message ( Check for socket connection )
+
+Speaker:
+  Registration Account:
+  1. Sign Up
+  2. Sign In
+  3. Sign Out
+     
+    Registration Event:           Organizer:
+    1. Register for Event         1. Approve or Reject Registration
+    2. Get Notification           2. Send Notification
+
