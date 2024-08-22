@@ -2,54 +2,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Appearance, StartTimeType } from '../enums/slot.enums';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmpty, IsOptional } from 'class-validator';
-
-// @Schema()
-// export class Slot {
-//   @ApiProperty({ example: "Slot1" })
-//   @Prop({ required: true })
-//   title: string;
-
-//   @ApiProperty({ example: "Speaker1" })
-//   @Prop({ required: true })
-//   speaker: string;
-
-//   @ApiProperty({ example: "Note1" })
-//   @Prop({ required: true })
-//   notes: string;
-
-//   @ApiProperty({ 
-//     example: Appearance.COUNTDOWN,
-//     enum: Appearance
-//   })
-//   @Prop({ required: true })
-//   appearance: Appearance;
-
-//   @ApiProperty({ 
-//     example: StartTimeType.MANUAL,
-//     enum: StartTimeType
-//   })
-//   @Prop({ required: true })
-//   startTimeType: StartTimeType;
-
-//   @ApiProperty({ 
-//     example: "2024-08-15T12:40:40.000+07:00",
-//     format: "yyyy-mm-ddThh:mm:ss.000+07:00"
-//   })
-//   @Prop({ required: true })
-//   startTime: Date;
-
-//   @ApiProperty({ 
-//     example: "23:50:00",
-//     format: "hh:mm:ss"
-//   })
-//   @Prop({ required: true })
-//   duration: string;
-// }
 
 @Schema()
 export class Slot {
-
   @ApiProperty({ example:  'timeslot' })
   @Prop({ required: true, default: 'timeslot' })
   tag: string;
@@ -67,11 +22,11 @@ export class Slot {
   notes: string;
 
   @ApiProperty({ example: Appearance.COUNTDOWN })
-  @Prop({ required: true })
+  @Prop({ required: true, enum: Appearance })
   appearance: Appearance;
 
   @ApiProperty({ example: StartTimeType.MANUAL })
-  @Prop({ required: true })
+  @Prop({ required: true, enum: StartTimeType })
   startTimeType: StartTimeType;
 
   @ApiProperty({

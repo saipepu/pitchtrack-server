@@ -6,6 +6,13 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateSlotDto {
     @ApiProperty({ 
+        example: "Tag1",
+    })
+    @IsString()
+    @IsNotEmpty()
+    readonly tag: string;
+
+    @ApiProperty({ 
         example: "Slot1",
     })
     @IsString()
@@ -51,11 +58,56 @@ export class CreateSlotDto {
     @IsNotEmpty()
     readonly startTime: Date;
 
-    @ApiProperty({ 
-        example: "23:50:00",
-        format: "hh:mm:ss"
-    })
-    @IsDuration()
+    @ApiProperty({ example: "3500"})
     @IsNotEmpty()
     readonly duration: string;
+
+    @ApiProperty({ example: "3500"})
+    @IsNotEmpty()
+    readonly pauseTime: string;
+
+    @ApiProperty({ example: "35"})
+    @IsNotEmpty()
+    readonly warningTime: string;
+
+    @ApiProperty({ example: "5"})
+    @IsNotEmpty()
+    readonly dangerTime: string;
+
+    @ApiProperty({ example: "yellow"})
+    @IsNotEmpty()
+    readonly warningColor: string;
+
+    @ApiProperty({ example: "red"})
+    @IsNotEmpty()
+    readonly dangerColor: string;
+
+    @ApiProperty({ example: "danger"})
+    @IsNotEmpty()
+    readonly dangerSound: string;
+
+    @ApiProperty({ example: "warning"})
+    @IsNotEmpty()
+    readonly warningSound: string;
+
+
+    @ApiProperty({ example: true})
+    @IsNotEmpty()
+    readonly flash: boolean;
+
+    @ApiProperty({ example: 3})
+    @IsNotEmpty()
+    readonly flashCount: number;
+
+    @ApiProperty({ example: 1})
+    @IsNotEmpty()
+    readonly sortOrder: number;
+
+    @ApiProperty({ example: "active"})
+    @IsNotEmpty()
+    readonly status: string;
+
+    @ApiProperty({ example: false})
+    @IsNotEmpty()
+    readonly active: boolean;
 }
