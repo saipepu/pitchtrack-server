@@ -28,7 +28,7 @@ export function ApiNotSucessResponseHelper() {
         status: 400, schema: {
         properties: {
             success: { type: 'boolean', example: false},
-            message: { type: 'string', example: 'Internal server error'}
+            message: { type: 'string', example: 'Bad Request'}
         },
     }}
 }
