@@ -9,6 +9,8 @@ import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
 import { SlotService } from 'src/slots/slots.service';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { MessagesService } from 'src/messages/messages.service';
+import { UpdateSlotDto } from 'src/slots/dto/update-slot.dto';
+import { UpdateMessageDto } from 'src/messages/dto/update-message.dto';
 
 @Injectable()
 export class EventService {
@@ -36,8 +38,6 @@ export class EventService {
   }
 
   async addSlot(id: string, slotData: CreateSlotDto): Promise<Event> {
-    // const slot = await this.SlotsService.create(slotData);
-
     const events = await this.EventModel.findByIdAndUpdate(
       id,
       { $push: { slots: slotData }},
@@ -47,9 +47,35 @@ export class EventService {
     return events;
   }
 
-  async addMessage(id: string, messageData: CreateMessageDto): Promise<Event> {
-    // const message = await this.MessagesService.create(messageData);
+  async updateSlot(eventId: string, slotId: string, slotData: UpdateSlotDto): Promise<Event> {
+    const event = await this.EventModel.findOneAndUpdate(
+      { _id: eventId, 'slots._id': slotId },
+      {
+        $set: {
+          'slots.$': slotData,
+        },
+      },
+      { new: true }
+    )
+      .populate(['slots', 'messages'])
+      .exec();
+  
+    return event;
+  }
 
+  async deleteSlot(eventId: string, slotId: string): Promise<Event> {
+    const event = await this.EventModel.findOneAndUpdate(
+      { _id: eventId },
+      { $pull: { slots: { _id: slotId } } },
+      { new: true }
+    )
+      .populate(['slots', 'messages'])
+      .exec();
+  
+    return event;
+  }
+
+  async addMessage(id: string, messageData: CreateMessageDto): Promise<Event> {
     const events = await this.EventModel.findByIdAndUpdate(
       id,
       { $push: { messages: messageData }},
@@ -57,6 +83,34 @@ export class EventService {
     ).populate(['slots', 'messages']).exec();
 
     return events;
+  }
+
+  async updateMessage(eventId: string, messageId: string, messageData: UpdateMessageDto): Promise<Event> {
+    const event = await this.EventModel.findOneAndUpdate(
+      { _id: eventId, 'messages._id': messageId },
+      {
+        $set: {
+          'messages.$': messageData,
+        },
+      },
+      { new: true }
+    )
+      .populate(['slots', 'messages'])
+      .exec();
+  
+    return event;
+  }
+
+  async deleteMessage(eventId: string, messageId: string): Promise<Event> {
+    const event = await this.EventModel.findOneAndUpdate(
+      { _id: eventId },
+      { $pull: { messages: { _id: messageId } } },
+      { new: true }
+    )
+      .populate(['slots', 'messages'])
+      .exec();
+  
+    return event;
   }
 
   async delete(id: string): Promise<Event> {

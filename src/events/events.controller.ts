@@ -7,6 +7,8 @@ import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { Event } from './schemas/event.schema';
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from 'src/helpers/swagger.helper';
+import { UpdateSlotDto } from 'src/slots/dto/update-slot.dto';
+import { UpdateMessageDto } from 'src/messages/dto/update-message.dto';
 
 @ApiExtraModels(Event)
 @ApiTags('Events')
@@ -51,9 +53,51 @@ export class EventController {
 
   @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
   @ApiResponse(ApiNotSucessResponseHelper())
+  @Put(':eventId/slots/:slotId')
+  updateSlot(
+    @Param('eventId') eventId: string,
+    @Param('slotId') slotId: string,
+    @Body() slot: UpdateSlotDto
+  ) {
+    return this.EventService.updateSlot(eventId, slotId, slot);
+  }
+
+  @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @Delete(':eventId/slots/:slotId') 
+  deleteSlot(
+    @Param('eventId') eventId: string, 
+    @Param('slotId') slotId: string, 
+  ) {
+    return this.EventService.deleteSlot(eventId, slotId);
+  }
+
+  @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
   @Post(':id/messages')
   addMessage(@Param('id') id: string, @Body() message: CreateMessageDto) {
     return this.EventService.addMessage(id, message);
+  }
+
+  @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @Put(':eventId/messages/:messageId')
+  updateMessage(
+    @Param('eventId') eventId: string,
+    @Param('messageId') messageId: string,
+    @Body() message: UpdateMessageDto
+  ) {
+    return this.EventService.updateMessage(eventId, messageId, message);
+  }
+
+  @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @Delete(':eventId/messages/:messageId') 
+  deleteMessage(
+    @Param('eventId') eventId: string, 
+    @Param('messageId') messageId: string, 
+  ) {
+    return this.EventService.deleteMessage(eventId, messageId);
   }
 
   @ApiResponse(ApiSuccessResponseHelper(Event.name))
