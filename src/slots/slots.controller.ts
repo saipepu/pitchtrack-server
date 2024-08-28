@@ -2,13 +2,14 @@ import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
 import { SlotService } from './slots.service';
 import { CreateSlotDto } from './dto/create-slot.dto';
 import { UpdateSlotDto } from './dto/update-slot.dto';
-import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Slot } from './schemas/slot.schema';
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from 'src/helpers/swagger.helper';
 
 @ApiTags('Slots')
 @ApiExtraModels(Slot)
 @Controller('slots')
+@ApiExcludeController()
 export class SlotController {
   constructor(private readonly SlotService: SlotService) {}
 

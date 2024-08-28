@@ -2,13 +2,14 @@ import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Message } from './schemas/message.schema';
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from 'src/helpers/swagger.helper';
 
 @ApiTags('Messages')
 @ApiExtraModels(Message)
 @Controller('messages')
+@ApiExcludeController()
 export class MessagesController {
   constructor(private readonly MessageService: MessagesService) {}
 
