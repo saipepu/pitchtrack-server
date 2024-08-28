@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { OrganizerSchema } from './organizer/schema/organizer.schema';
-import { ChatGateway } from './chat.gateway';
-import { TimerGateWay } from './timer.gateway';
 import { EventsModule } from './events/events.module';
 import { SlotsModule } from './slots/slots.module';
 import { MessagesModule } from './messages/messages.module';
 import { OrganizerModule } from './organizer/organizer.module';
 import { AuthModule } from './auth/auth.module';
+import { TimerModule } from './timer/timers.module';
 
 @Module({
   imports: [
@@ -27,8 +24,9 @@ import { AuthModule } from './auth/auth.module';
     SlotsModule,
     MessagesModule,
     AuthModule,
+    TimerModule
   ],
-  controllers: [AppController],
-  providers: [AppService, ChatGateway, TimerGateWay],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
