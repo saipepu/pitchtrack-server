@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 import Timer from 'easytimer.js';
 import { Body } from '@nestjs/common';
 
-@WebSocketGateway({ namespace: 'api' })
+@WebSocketGateway()
 export class TimerGateway {
   @WebSocketServer() server: Server;
   private timers: { [clientId: string]: Timer } = {};
