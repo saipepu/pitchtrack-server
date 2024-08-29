@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { OrganizerSchema } from './organizer/schema/organizer.schema';
 import { EventsModule } from './events/events.module';
 import { SlotsModule } from './slots/slots.module';
 import { MessagesModule } from './messages/messages.module';
@@ -16,9 +15,6 @@ import { TimerModule } from './timer/timers.module';
       envFilePath: '.env',
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
-    MongooseModule.forFeature([
-      { name: 'Organizer', schema: OrganizerSchema },
-    ]),
     OrganizerModule,
     EventsModule,
     SlotsModule,
