@@ -6,18 +6,16 @@ import { Event } from './schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
-import { SlotService } from 'src/slots/slots.service';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
-import { MessagesService } from 'src/messages/messages.service';
 import { UpdateSlotDto } from 'src/slots/dto/update-slot.dto';
 import { UpdateMessageDto } from 'src/messages/dto/update-message.dto';
+import { TimerGateway } from 'src/timer/timers.gateway';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(Event.name) private EventModel: Model<Event>,
-    private readonly SlotsService: SlotService,
-    private readonly MessagesService: MessagesService,
+    private readonly timerGateway: TimerGateway
   ) {}
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
@@ -48,6 +46,7 @@ export class EventService {
   }
 
   async updateSlot(eventId: string, slotId: string, slotData: UpdateSlotDto): Promise<Event> {
+
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId, 'slots._id': slotId },
       {
@@ -58,7 +57,13 @@ export class EventService {
       { new: true }
     )
       .populate(['slots', 'messages'])
-      .exec();
+      .exec()
+      .then((res) => {
+
+        this.timerGateway.acknowledgeSlotsUpdate(eventId)
+
+        return res
+      })
   
     return event;
   }
@@ -70,7 +75,7 @@ export class EventService {
       { _id: eventId },
       {
         $set: {
-          'slots.$[].status': 'pause',
+          'slots.$[].status': 'stopped',
         },
       },
       { new: true }

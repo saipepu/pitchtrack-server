@@ -1,7 +1,7 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import Timer from 'easytimer.js';
-import { Body, Injectable } from '@nestjs/common';
+import { Body, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { IsNotEmpty } from 'class-validator';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -24,7 +24,7 @@ export class TimerGateway {
 
   constructor(
     @InjectModel(Event.name) private EventModel: Model<Event>,
-    private readonly EventService: EventService
+    @Inject(forwardRef(() => EventService)) private readonly EventService: EventService, // TO AVOID CIRCULAR DEPENDENCY
   ) {}
 
   @WebSocketServer() server: Server;
@@ -75,7 +75,12 @@ export class TimerGateway {
 
     timer.addEventListener('targetAchieved', () => {
       this.server.emit('timerCompleted');
-      this.clearTimer(payload.eventId);
+      // this.clearTimer(payload.eventId);
+      this.EventService.updateSlotStatus(payload.eventId, payload.slotId, 'completed')
+        .then(() => {
+          console.log('timerCompleted')
+          this.acknowledgeSlotsUpdate(payload.eventId)
+        });
     });
 
   }
@@ -86,7 +91,7 @@ export class TimerGateway {
     @Body() payload: TimerTracker
   ) {
 
-    this.EventService.updateSlotStatus(payload.eventId, payload.slotId, 'pause')
+    this.EventService.updateSlotStatus(payload.eventId, payload.slotId, 'paused')
       .then(() => {
         this.acknowledgeSlotsUpdate(payload.eventId)
       });
@@ -94,7 +99,6 @@ export class TimerGateway {
     if (timer) {
       timer.pause();
     }
-    
 
   }
 
@@ -108,6 +112,7 @@ export class TimerGateway {
       .then(() => {
         this.acknowledgeSlotsUpdate(payload.eventId)
       });
+    
     const timer = this.timers[payload.eventId];
     if (timer) {
       timer.start();
@@ -117,7 +122,7 @@ export class TimerGateway {
   }
 
   private clearTimer(clientId: string) {
-    console.log(this.timers);
+    console.log('CLEARING TIMER', this.timers[clientId]);
     const timer = this.timers[clientId];
     if (timer) {
       timer.stop();
@@ -125,7 +130,7 @@ export class TimerGateway {
     }
   }
 
-  private async acknowledgeSlotsUpdate(eventId: string) {         // EVERY TIME A SLOT IS UPDATED, WE NEED TO SEND THE UPDATED SLOTS TO ALL CLIENTS
+  async acknowledgeSlotsUpdate(eventId: string) {         // EVERY TIME A SLOT IS UPDATED, WE NEED TO SEND THE UPDATED SLOTS TO ALL CLIENTS
     const event = await this.EventService.findOne(eventId);
 
     this.server.to(eventId).emit('slotsUpdated', 
