@@ -63,6 +63,41 @@ export class EventService {
     return event;
   }
 
+  async updateSlotStatus(eventId: string, slotId: string, status: string): Promise<Event> {
+
+    // SET ALL SLOTS TO PAUSE
+    const event = await this.EventModel.findOneAndUpdate(
+      { _id: eventId },
+      {
+        $set: {
+          'slots.$[].status': 'pause',
+        },
+      },
+      { new: true }
+    ).then(async () => {
+
+      console.log('SETTING ALL SLOTS TO ', status)
+      // SET SELECTED SLOT TO ACTIVE
+      const updated = await this.EventModel.findOneAndUpdate(
+        { _id: eventId, 'slots._id': slotId },
+        {
+          $set: {
+            'slots.$.status': status,
+          },
+        },
+        { new: true }
+      )
+      .populate(['slots', 'messages'])
+      .exec();
+
+      return updated
+
+    })
+
+    return event;
+
+  }
+
   async deleteSlot(eventId: string, slotId: string): Promise<Event> {
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId },

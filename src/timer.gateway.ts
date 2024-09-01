@@ -33,7 +33,7 @@ export class TimerGateWay {
         @MessageBody()
         message: Timer
     ): void {
-        
+        console.log(message)
         this.server.emit('resume', message.action + ' time to start by ' + this.saved )
     }
 

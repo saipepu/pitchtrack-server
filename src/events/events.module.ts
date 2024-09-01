@@ -16,5 +16,6 @@ import { MessageSchema } from 'src/messages/schemas/message.schema';
 ],
   controllers: [EventController],
   providers: [EventService, SlotService, MessagesService],
+  exports: [EventService],
 })
 export class EventsModule {}

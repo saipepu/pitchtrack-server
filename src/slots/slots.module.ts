@@ -11,14 +11,15 @@ import { AllExceptionsFilter } from 'src/filters/all-exceptions.filter';
   imports: [MongooseModule.forFeature([{ name: 'Slot', schema: SlotSchema }])],
   controllers: [SlotController],
   providers: [SlotService,
-  {
-    provide: APP_INTERCEPTOR,
-    useClass: TransformInterceptor
-  },
-  {
-    provide: APP_FILTER,
-    useClass: AllExceptionsFilter
-  }
-]
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter
+    }
+  ],
+  exports: [SlotService]
 })
 export class SlotsModule {}
