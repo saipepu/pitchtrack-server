@@ -1,20 +1,18 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventService } from './events.service';
 import { EventController } from './events.controller';
 import { EventSchema } from './schemas/event.schema';
-import { SlotService } from 'src/slots/slots.service';
-import { SlotSchema } from 'src/slots/schemas/slot.schema';
-import { MessagesService } from 'src/messages/messages.service';
-import { MessageSchema } from 'src/messages/schemas/message.schema';
+import { TimerGateway } from 'src/timer/timers.gateway';
+import { TimerModule } from 'src/timer/timers.module';
 
 @Module({
   imports: [
-  MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]), 
-  MongooseModule.forFeature([{ name: 'Slot', schema: SlotSchema}]),
-  MongooseModule.forFeature([{ name: 'Message', schema: MessageSchema}]),
-],
+    MongooseModule.forFeature([{ name: 'Event', schema: EventSchema }]), 
+    forwardRef(() => TimerModule)
+  ],
   controllers: [EventController],
-  providers: [EventService, SlotService, MessagesService],
+  providers: [EventService, TimerGateway],
+  exports: [EventService],
 })
 export class EventsModule {}
