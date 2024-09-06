@@ -12,6 +12,11 @@ export class AuthService {
   ) {}
 
   async register(user: any) {
+
+    // --------------------------------
+    // TODO: CHECK IF THE USER ALREADY EXISTS
+    // --------------------------------
+
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newOrganizer = await this.organizerService.create({
       ...user, password: hashedPassword
