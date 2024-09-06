@@ -48,4 +48,9 @@ export class OrganizerController {
     return this.organizerService.deleteOrganizer(id);
   }
 
+  @Delete()
+  async deleteAll() {
+    return this.organizerService.deleteAll();
+  }
+
 }

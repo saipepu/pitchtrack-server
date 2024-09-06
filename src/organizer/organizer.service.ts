@@ -24,7 +24,7 @@ export class OrganizerService {
   }
 
   async findByEmail(email: string) {
-    return await this.OrganizerModel.findOne({ email: email }).populate('events').exec();
+    return await this.OrganizerModel.findOne({ email: email }).exec();
   }
 
   async updateOrganizer(id: string, updateOrgainzerDto: UpdateOrgainzerDto) {
@@ -33,6 +33,10 @@ export class OrganizerService {
 
   async deleteOrganizer(id: string) {
     return await this.OrganizerModel.findByIdAndDelete(id).exec();
+  }
+
+  async deleteAll() {
+    return this.OrganizerModel.deleteMany().exec();
   }
 
 }
