@@ -1,12 +1,12 @@
-import { ApiExtraModels, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiExtraModels, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Organizer } from "./schema/organizer.schema";
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { OrganizerService } from "./organizer.service";
-import { Query as ExpressQuery } from 'express-serve-static-core'
 import { CreateOrganzierDto } from "./dto/create-organizer.dto";
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from "src/helpers/swagger.helper";
 import { UpdateOrgainzerDto } from "./dto/update-organizer.dto";
 
+@ApiBearerAuth('bearer-token')
 @ApiTags('Organizer')
 @ApiExtraModels(Organizer)
 @Controller('orgs')

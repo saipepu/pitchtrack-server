@@ -3,13 +3,15 @@ import { EventService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
-import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { Event } from './schemas/event.schema';
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from 'src/helpers/swagger.helper';
 import { UpdateSlotDto } from 'src/slots/dto/update-slot.dto';
 import { UpdateMessageDto } from 'src/messages/dto/update-message.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@ApiBearerAuth('bearer-token')
 @ApiExtraModels(Event)
 @ApiTags('Events')
 @Controller('events')
