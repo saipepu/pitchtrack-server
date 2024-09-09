@@ -17,6 +17,10 @@ export class AuthService {
     // TODO: CHECK IF THE USER ALREADY EXISTS
     // --------------------------------
 
+    const existingOrganizer = await this.organizerService.findByEmail(user.email);
+
+    if(existingOrganizer) throw new UnauthorizedException('User already exists');
+
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newOrganizer = await this.organizerService.create({
       ...user, password: hashedPassword
