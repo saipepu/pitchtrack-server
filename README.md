@@ -48,6 +48,7 @@ A feature-rich clone of [StageTimer.io](https://stagetimer.io), built as a senio
     MONGO_USER=
     MONGO_PWD=
     MONGO_URI=
+    JWT_SECRET=
    ```
 
 4. **Run the Application Locally:**
