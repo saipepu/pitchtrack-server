@@ -50,6 +50,30 @@ export class TimerGateway implements OnGatewayDisconnect {
     client.join(payload.eventId);
     this.addClientToRoom(client.id, payload.eventId);
     this.broadcastClientsInRoom(payload.eventId);
+
+    console.log('joined room', payload.eventId);
+    let timer = this.timers[payload.eventId]
+
+    // EMITTING THE PREVIOUS TIMER VALUE TO THE NEWLY JOINED CLIENT OR WHEN A CLIENT REFRESHES THE BROWSER AND REJOIN THE ROOM
+    // IN CASE THE TIMER IS NOT RUNNING, THE SOCKET HAS TO TELL WHICH TIMER IS OR SLOT WAS PAUSED
+    if(timer && !timer.timer.isRunning()) {
+
+      for(let i = 0; i < 3; i++) {
+
+          setTimeout(() => {
+            console.log('emitting slotId', timer.slotId)
+            this.server.to(payload.eventId).emit('timerUpdate',
+              {
+                remainingTime: timer.timer.getTotalTimeValues().seconds,
+                eventId: payload.eventId,
+                slotId: timer.slotId,
+                isRunning: false
+              });
+          }, 1000)
+
+      }
+
+    }
   }
 
   @SubscribeMessage('start')
@@ -63,17 +87,19 @@ export class TimerGateway implements OnGatewayDisconnect {
     const timer = new Timer();
     this.timers[payload.eventId] = {
       timer: timer,
-      slotId: payload.slotId
+      slotId: payload.slotId,
     };
     
     timer.start({ countdown: true, startValues: { seconds: payload.duration } });
 
     timer.addEventListener('secondsUpdated', () => {
+      console.log('secondsUpdated', timer.getTotalTimeValues().seconds, 'to', payload.eventId);
       this.server.to(payload.eventId).emit('timerUpdate',
         {
           remainingTime: timer.getTotalTimeValues().seconds,
           eventId: payload.eventId,
-          slotId: payload.slotId
+          slotId: payload.slotId,
+          isRunning: true
         });
     });
 
@@ -90,7 +116,9 @@ export class TimerGateway implements OnGatewayDisconnect {
     @MessageBody() payload: TimerTracker
   ) {
 
+    console.log('pause', payload.eventId);
     const currentTimer = this.timers[payload.eventId];
+    console.log('pause', currentTimer);
     if (currentTimer) {
       currentTimer.timer.pause();
     }
