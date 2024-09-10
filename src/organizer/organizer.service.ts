@@ -4,13 +4,26 @@ import { Organizer } from "./schema/organizer.schema";
 import { Model } from "mongoose";
 import { CreateOrganzierDto } from "./dto/create-organizer.dto";
 import { UpdateOrgainzerDto } from "./dto/update-organizer.dto";
+import { EventService } from "src/events/events.service";
 
 @Injectable()
 export class OrganizerService {
-  constructor(@InjectModel(Organizer.name) private OrganizerModel: Model<Organizer>) {}
+  constructor(
+    @InjectModel(Organizer.name) private OrganizerModel: Model<Organizer>,
+    readonly eventService: EventService
+  ) {}
 
   async create(createOrganzierDto: CreateOrganzierDto) {
     const createdOrganizer = new this.OrganizerModel(createOrganzierDto);
+
+    const event: any = await this.eventService.create({
+      title: 'Event created by ' + createdOrganizer.name,
+      slots: [],
+      messages: []
+    })
+
+    createdOrganizer.events.push(event._id);
+
     return createdOrganizer.save();
   }
 

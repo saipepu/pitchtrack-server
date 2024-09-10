@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { Role } from "../enums/organizer.enums";
 import { Event } from "src/events/schemas/event.schema";
 
@@ -24,8 +24,8 @@ export class Organizer extends Document {
   @Prop({ required: true})
   role: Role;
 
-  @ApiPropertyOptional({ type: Event, isArray: true})
-  @Prop({ type: [Event] })
+  @ApiProperty({ example: 'array of eventId', description: 'Event ID' })
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: "Event" })
   events: Event[];
 }
 
