@@ -99,7 +99,7 @@ export class CreateSlotDto {
     @IsNotEmpty()
     readonly flashCount: number;
 
-    @ApiProperty({ example: 1})
+    @ApiProperty({ example: 0})
     @IsNotEmpty()
     readonly sortOrder: number;
 

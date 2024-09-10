@@ -5,6 +5,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Schema()
 export class Slot {
+  _id: string;
+
   @ApiProperty({ example:  'timeslot' })
   @Prop({ required: true, default: 'timeslot' })
   tag: string;
@@ -36,19 +38,15 @@ export class Slot {
   @Prop({ required: true })
   startTime: Date;
 
-  @ApiProperty({ example: '123123' }) // total seconds
+  @ApiProperty({ example: '123123' }) 
   @Prop({ required: true })
   duration: string;
 
-  @ApiProperty({ example: '11233' }) // total seconds
-  @Prop({ required: true })
-  pauseTime: string;
-
-  @ApiProperty({ example: '10' }) // in seconds
+  @ApiProperty({ example: '10' }) 
   @Prop({ required: true })
   warningTime: string;
 
-  @ApiProperty({ example: '5' }) // in seconds
+  @ApiProperty({ example: '5' })
   @Prop({ required: true })
   dangerTime: string;
 
@@ -80,10 +78,6 @@ export class Slot {
   @Prop({ required: true })
   sortOrder: number;
 
-  @ApiProperty({ example: 'active' })
-  @Prop({ required: true })
-  status: string;
-
   @ApiProperty({ example: false })
   @Prop({ required: true })
   active: boolean;
@@ -94,25 +88,23 @@ export const SlotSchema = SchemaFactory.createForClass(Slot);
 
 
 // Example of a slot object
-let slot: Slot = {
-  tag: 'timeslot',
-  title: 'Slot 1',
-  speaker: 'Speaker 1',
-  notes: 'Some notes',
-  startTimeType: StartTimeType.MANUAL,
-  startTime: new Date(),
-  duration: '120',
-  pauseTime: '0',
-  appearance: Appearance.COUNTDOWN,
-  warningTime: '10',
-  dangerTime: '5',
-  warningColor: 'yellow',
-  dangerColor: 'red',
-  warningSound: 'warning',
-  dangerSound: 'danger',
-  flash: false,
-  flashCount: 3,
-  sortOrder: 1,
-  status: 'active',
-  active: false,
-}
+// let slot: Slot = {
+//   tag: 'timeslot',
+//   title: 'Slot 1',
+//   speaker: 'Speaker 1',
+//   notes: 'Some notes',
+//   startTimeType: StartTimeType.MANUAL,
+//   startTime: new Date(),
+//   duration: '120',
+//   appearance: Appearance.COUNTDOWN,
+//   warningTime: '10',
+//   dangerTime: '5',
+//   warningColor: 'yellow',
+//   dangerColor: 'red',
+//   warningSound: 'warning',
+//   dangerSound: 'danger',
+//   flash: false,
+//   flashCount: 3,
+//   sortOrder: 1,
+//   active: false,
+// }

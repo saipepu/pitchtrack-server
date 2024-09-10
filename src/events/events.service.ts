@@ -34,9 +34,15 @@ export class EventService {
   }
 
   async addSlot(id: string, slotData: CreateSlotDto): Promise<Event> {
+    const event = await this.EventModel.findById(id).populate('slots').exec();
+
+    const newOrder = event.slots.length > 0 ? Math.max(...event.slots.map(slot => slot.sortOrder)) + 1 : 0;
+
+    const slotWithOrder = { ...slotData, sortOrder: newOrder };
+
     const events = await this.EventModel.findByIdAndUpdate(
       id,
-      { $push: { slots: slotData }},
+      { $push: { slots: slotWithOrder }},
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
@@ -56,50 +62,36 @@ export class EventService {
     )
       .populate(['slots', 'messages'])
       .exec();
-      // .then((res) => {
-
-      //   this.timerGateway.acknowledgeSlotsUpdate(eventId)
-
-      //   return res
-      // })
   
     return event;
   }
 
-  // async updateSlotStatus(eventId: string, slotId: string, status: string): Promise<Event> {
-
-  //   // SET ALL SLOTS TO PAUSE
-  //   const event = await this.EventModel.findOneAndUpdate(
-  //     { _id: eventId },
-  //     {
-  //       $set: {
-  //         'slots.$[].status': 'stopped',
-  //       },
-  //     },
-  //     { new: true }
-  //   ).then(async () => {
-
-  //     console.log('SETTING ALL SLOTS TO ', status)
-  //     // SET SELECTED SLOT TO ACTIVE
-  //     const updated = await this.EventModel.findOneAndUpdate(
-  //       { _id: eventId, 'slots._id': slotId },
-  //       {
-  //         $set: {
-  //           'slots.$.status': status,
-  //         },
-  //       },
-  //       { new: true }
-  //     )
-  //     .populate(['slots', 'messages'])
-  //     .exec();
-
-  //     return updated
-
-  //   })
-
-  //   return event;
-
-  // }
+  async reorderSlots(eventId: string, newOrder: string[]): Promise<Event> {
+    const event = await this.EventModel.findById(eventId).exec();
+    if (!event) throw new Error('Event not found');
+  
+    const slotsMap = new Map(event.slots.map(slot => [slot._id.toString(), slot]));
+  
+    const bulkOperations = newOrder.reduce((ops, slotName, index) => {
+      console.log(slotName)
+      const slot = slotsMap.get(slotName);
+      if (slot && slot.sortOrder !== index) { 
+        ops.push({
+          updateOne: {
+            filter: { _id: eventId, 'slots._id': slotName },
+            update: { 'slots.$.sortOrder': index }, 
+          },
+        });
+      }
+      return ops;
+    }, []);
+  
+    if (bulkOperations.length > 0) {
+      await this.EventModel.bulkWrite(bulkOperations);
+    }
+  
+    return await this.EventModel.findById(eventId).populate(['slots', 'messages']).exec();
+  }
 
   async deleteSlot(eventId: string, slotId: string): Promise<Event> {
     const event = await this.EventModel.findOneAndUpdate(

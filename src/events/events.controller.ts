@@ -3,7 +3,7 @@ import { EventService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
-import { ApiBearerAuth, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { Event } from './schemas/event.schema';
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from 'src/helpers/swagger.helper';
@@ -11,6 +11,7 @@ import { UpdateSlotDto } from 'src/slots/dto/update-slot.dto';
 import { UpdateMessageDto } from 'src/messages/dto/update-message.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @ApiBearerAuth('bearer-token')
 @ApiExtraModels(Event)
 @ApiTags('Events')
@@ -62,6 +63,27 @@ export class EventController {
     @Body() slot: UpdateSlotDto
   ) {
     return this.EventService.updateSlot(eventId, slotId, slot);
+  }
+
+  @Post(':id/reorder-slots')
+  @ApiBody({
+    description: 'New order of slots by slot titles',
+    schema: {
+      type: 'object',
+      properties: {
+        newOrder: {
+          type: 'array',
+          items: { type: 'string' },
+          example: ['slotId1', 'slotId2', 'slotId3'],
+        },
+      },
+    },
+  })
+  async reorderSlots(
+    @Param('id') eventId: string,
+    @Body('newOrder') newOrder: string[]
+  ): Promise<Event> {
+    return this.EventService.reorderSlots(eventId, newOrder);
   }
 
   @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
