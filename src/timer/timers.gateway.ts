@@ -47,6 +47,10 @@ export class TimerGateway implements OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: Event
   ) {
+
+    if(client.rooms.size > 1) {
+      client.leave(Array.from(client.rooms)[client.rooms.size - 1])
+    }
     client.join(payload.eventId);
     this.addClientToRoom(client.id, payload.eventId);
     this.broadcastClientsInRoom(payload.eventId);

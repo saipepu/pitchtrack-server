@@ -52,4 +52,16 @@ export class OrganizerService {
     return this.OrganizerModel.deleteMany().exec();
   }
 
+  async createEvent(id: string, payload: any) {
+    const organizer = await this.OrganizerModel.findById(id).exec();
+    const event: any = await this.eventService.create({
+      title: payload.title,
+      slots: [],
+      messages: []
+    })
+
+    organizer.events.push(event._id);
+    return organizer.save();
+  }
+
 }

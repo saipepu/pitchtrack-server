@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiExtraModels, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiExtraModels, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Organizer } from "./schema/organizer.schema";
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { OrganizerService } from "./organizer.service";
@@ -51,6 +51,14 @@ export class OrganizerController {
   @Delete()
   async deleteAll() {
     return this.organizerService.deleteAll();
+  }
+
+  @ApiResponse(ApiSuccessResponseHelper(Organizer.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @ApiOperation({ summary: 'Create an event as the organizer' })
+  @Post(':id/event')
+  async createEvent(@Param('id') id: string, @Body() payload: any) {
+    return this.organizerService.createEvent(id, payload);
   }
 
 }
