@@ -122,10 +122,19 @@ export class TimerGateway implements OnGatewayDisconnect {
 
     console.log('pause', payload.eventId);
     const currentTimer = this.timers[payload.eventId];
-    console.log('pause', currentTimer);
     if (currentTimer) {
       currentTimer.timer.pause();
     }
+
+    // NEED TO BROADCAST THE PAUSE EVENT TO ALL CLIENTS IN THE ROOM
+    this.server.to(payload.eventId).emit('timerUpdate',
+      {
+        remainingTime: currentTimer.timer.getTotalTimeValues().seconds,
+        eventId: payload.eventId,
+        slotId: payload.slotId,
+        isRunning: false
+      });
+
   }
 
   @SubscribeMessage('resume')

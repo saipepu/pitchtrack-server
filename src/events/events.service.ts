@@ -116,6 +116,14 @@ export class EventService {
   }
 
   async updateMessage(eventId: string, messageId: string, messageData: UpdateMessageDto): Promise<Event> {
+
+    // set all messages to onDisplay = false
+    await this.EventModel.updateMany(
+      { },
+      { $set: { onDisplay: false } },
+      { new: true }
+    )
+
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId, 'messages._id': messageId },
       {
