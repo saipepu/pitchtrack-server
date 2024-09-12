@@ -1,8 +1,9 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, ConnectedSocket, MessageBody, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import Timer from 'easytimer.js';
-import { Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IsNotEmpty} from 'class-validator';
+import { EventService } from 'src/events/events.service';
 
 class TimerTracker {
   @IsNotEmpty()
@@ -33,10 +34,14 @@ export class TimerGateway implements OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   private connectedClients: Map<string, Set<string>> = new Map();
+  private clientRoom: string = '';
 
   private timers: { [eventId: string]: CurrentTimer } = {};
 
-  constructor() {}
+  constructor(
+    @Inject(forwardRef(() => EventService))
+    private EventService: EventService
+  ) {}
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
     this.removeClientFromRooms(client);
@@ -52,6 +57,7 @@ export class TimerGateway implements OnGatewayDisconnect {
       client.leave(Array.from(client.rooms)[client.rooms.size - 1])
     }
     client.join(payload.eventId);
+    this.clientRoom = payload.eventId;
     this.addClientToRoom(client.id, payload.eventId);
     this.broadcastClientsInRoom(payload.eventId);
 
@@ -93,6 +99,7 @@ export class TimerGateway implements OnGatewayDisconnect {
       timer: timer,
       slotId: payload.slotId,
     };
+    let runningSlotId = payload.slotId;
     
     timer.start({ countdown: true, startValues: { seconds: payload.duration } });
 
@@ -102,15 +109,31 @@ export class TimerGateway implements OnGatewayDisconnect {
         {
           remainingTime: timer.getTotalTimeValues().seconds,
           eventId: payload.eventId,
-          slotId: payload.slotId,
+          slotId: runningSlotId,
           isRunning: true
         });
     });
 
-    // timer.addEventListener('targetAchieved', () => { 
-    //   this.server.to(payload.eventId).emit('timerCompleted');
-    //   this.clearTimer(payload.eventId);
-    // });
+    timer.addEventListener('targetAchieved', async () => {
+
+      let event = await this.EventService.findOne(payload.eventId)
+      if(event) {
+        let slots = event.slots.sort((a, b) => a.sortOrder - b.sortOrder);
+        let currentSlotIndex = slots.findIndex(slot => slot._id.toString() === runningSlotId);
+        let nextSlot = slots[currentSlotIndex + 1];
+
+        console.log(nextSlot.startTimeType)
+        if(nextSlot.startTimeType == 'linked') {
+          runningSlotId = nextSlot._id.toString();
+          timer.start({ countdown: true, startValues: { seconds: parseInt(nextSlot.duration) } });
+        } else {
+          this.server.to(payload.eventId).emit('timerCompleted');
+          this.clearTimer(payload.eventId);
+        }
+
+      }
+
+    });
 
   }
 
@@ -146,7 +169,24 @@ export class TimerGateway implements OnGatewayDisconnect {
     if (currentTimer) {
       currentTimer.timer.start();
     }
+  }
 
+  @SubscribeMessage('skip')
+  handleSkipTimer(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Event
+  ) {
+    // skip 10s
+    const currentTimer = this.timers[payload.eventId];
+    
+    if (currentTimer.timer.getTotalTimeValues().seconds > 10) {
+
+      const newStartValues = { seconds: currentTimer.timer.getTotalTimeValues().seconds - 10 };
+      currentTimer.timer.stop();
+
+      // Restart the timer with the updated values
+      currentTimer.timer.start({ countdown: true, startValues: newStartValues })
+    }
   }
 
   private broadcastClientsInRoom(room: string) {
@@ -182,16 +222,18 @@ export class TimerGateway implements OnGatewayDisconnect {
     }
   }
 
-  // async acknowledgeSlotsUpdate(eventId: string) {         // EVERY TIME A SLOT IS UPDATED, WE NEED TO SEND THE UPDATED SLOTS TO ALL CLIENTS
-  //   const event = await this.EventService.findOne(eventId);
+  async acknowledgeRoomInfoUpdate(event: any, updatedCategory?: string) {         // EVERY TIME A SLOT IS UPDATED, WE NEED TO SEND THE UPDATED SLOTS TO ALL CLIENTS
 
-  //   this.server.to(eventId).emit('slotsUpdated', 
-  //     {
-  //       success: true,
-  //       message: event.slots
-  //     }
-  //   );
+    if(event) {
+      this.server.to(event._id.toString()).emit('onRoomInfoUpdate', 
+        {
+          success: true,
+          message: event,
+          category: updatedCategory
+        }
+      );
+    }
 
-  // }
+  }
 
 }
