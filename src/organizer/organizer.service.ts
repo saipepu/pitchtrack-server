@@ -10,7 +10,7 @@ import { EventService } from "src/events/events.service";
 export class OrganizerService {
   constructor(
     @InjectModel(Organizer.name) private OrganizerModel: Model<Organizer>,
-    readonly eventService: EventService
+    private eventService: EventService
   ) {}
 
   async create(createOrganzierDto: CreateOrganzierDto) {

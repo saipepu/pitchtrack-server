@@ -8,5 +8,6 @@ export enum Appearance {
 
 export enum StartTimeType {
     MANUAL = "manual",
-    SCHEDULED = "scheduled"
+    SCHEDULED = "scheduled",
+    LINKED = "linked"
 }
