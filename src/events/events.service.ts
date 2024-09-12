@@ -9,11 +9,13 @@ import { CreateSlotDto } from 'src/slots/dto/create-slot.dto';
 import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { UpdateSlotDto } from 'src/slots/dto/update-slot.dto';
 import { UpdateMessageDto } from 'src/messages/dto/update-message.dto';
+import { TimerGateway } from 'src/timer/timers.gateway';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel(Event.name) private EventModel: Model<Event>,
+    private socketService: TimerGateway,
   ) {}
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
@@ -40,13 +42,17 @@ export class EventService {
 
     const slotWithOrder = { ...slotData, sortOrder: newOrder };
 
-    const events = await this.EventModel.findByIdAndUpdate(
+    const eventWithNewSlot = await this.EventModel.findByIdAndUpdate(
       id,
       { $push: { slots: slotWithOrder }},
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
-    return events;
+    // emit socket event
+    console.log('added slot')
+    this.socketService.acknowledgeRoomInfoUpdate(eventWithNewSlot, 'Syncing new slot');
+
+    return eventWithNewSlot;
   }
 
   async updateSlot(eventId: string, slotId: string, slotData: UpdateSlotDto): Promise<Event> {
@@ -62,6 +68,9 @@ export class EventService {
     )
       .populate(['slots', 'messages'])
       .exec();
+
+    // emit socket event
+    this.socketService.acknowledgeRoomInfoUpdate(event, 'slot info');
   
     return event;
   }
@@ -90,7 +99,12 @@ export class EventService {
       await this.EventModel.bulkWrite(bulkOperations);
     }
   
-    return await this.EventModel.findById(eventId).populate(['slots', 'messages']).exec();
+    const eventWithNewSlotOrder = await this.EventModel.findById(eventId).populate(['slots', 'messages']).exec();
+
+    // emit socket event
+    this.socketService.acknowledgeRoomInfoUpdate(eventWithNewSlotOrder, 'slot order');
+
+    return eventWithNewSlotOrder;
   }
 
   async deleteSlot(eventId: string, slotId: string): Promise<Event> {
@@ -101,22 +115,29 @@ export class EventService {
     )
       .populate(['slots', 'messages'])
       .exec();
+
+    // emit socket event
+    this.socketService.acknowledgeRoomInfoUpdate(event, 'slot deletion');
   
     return event;
   }
 
   async addMessage(id: string, messageData: CreateMessageDto): Promise<Event> {
-    const events = await this.EventModel.findByIdAndUpdate(
+    const event = await this.EventModel.findByIdAndUpdate(
       id,
       { $push: { messages: messageData }},
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
-    return events;
+    // emit socket event
+    this.socketService.acknowledgeRoomInfoUpdate(event, 'new message');
+
+    return event;
   }
 
   async updateMessage(eventId: string, messageId: string, messageData: UpdateMessageDto): Promise<Event> {
 
+    console.log(messageId, 'messageId')
     // set all messages to onDisplay = false
     await this.EventModel.updateMany(
       { },
@@ -135,6 +156,9 @@ export class EventService {
     )
       .populate(['slots', 'messages'])
       .exec();
+
+    // emit socket event
+    this.socketService.acknowledgeRoomInfoUpdate(event, 'message info');
   
     return event;
   }
@@ -147,9 +171,14 @@ export class EventService {
     )
       .populate(['slots', 'messages'])
       .exec();
+
+    // emit socket event
+    this.socketService.acknowledgeRoomInfoUpdate(event, 'message deletion');
   
     return event;
   }
+
+  // --------------------- //// ---- DANGER ZONE ---- //// --------------------- //
 
   async delete(id: string): Promise<Event> {
     return this.EventModel.findByIdAndDelete(id).exec();
