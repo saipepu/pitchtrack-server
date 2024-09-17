@@ -1,6 +1,6 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, ConnectedSocket, MessageBody, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import Timer from 'easytimer.js';
+import Timer, { TimerValues } from 'easytimer.js';
 import { forwardRef, Inject, Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IsNotEmpty} from 'class-validator';
 import { EventService } from 'src/events/events.service';
@@ -187,6 +187,33 @@ export class TimerGateway implements OnGatewayDisconnect {
       // Restart the timer with the updated values
       currentTimer.timer.start({ countdown: true, startValues: newStartValues })
     }
+  }
+
+  @SubscribeMessage('rewind')
+  async handleRewindTimer(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Event
+  ) {
+    // skip 10s
+    const currentTimer = this.timers[payload.eventId];
+
+    let event = await this.EventService.findOne(payload.eventId)
+
+    if(event) {
+      let slot = event.slots.find(slot => slot._id.toString() === currentTimer.slotId);
+
+      if(parseInt(slot.duration) > currentTimer.timer.getTotalTimeValues().seconds + 10) {
+
+        const newStartValues = { seconds: currentTimer.timer.getTotalTimeValues().seconds + 10 };
+        currentTimer.timer.stop();
+
+        // Restart the timer with the updated values
+        currentTimer.timer.start({ countdown: true, startValues: newStartValues })
+
+      }
+    }
+
+
   }
 
   private broadcastClientsInRoom(room: string) {
