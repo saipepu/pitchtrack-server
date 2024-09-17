@@ -19,12 +19,12 @@ import { Public } from 'src/common/decorators/public.decorator';
 export class EventController {
   constructor(private readonly EventService: EventService) {}
 
-  @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
-  @ApiResponse(ApiNotSucessResponseHelper())
-  @Post()
-  create(@Body() createEventDto: CreateEventDto) {
-    return this.EventService.create(createEventDto);
-  }
+  // @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
+  // @ApiResponse(ApiNotSucessResponseHelper())
+  // @Post()
+  // create(@Body() createEventDto: CreateEventDto) {
+  //   return this.EventService.create(createEventDto);
+  // }
 
   @ApiResponse(ApiSuccessResponseHelper(Event.name, 'array'))
   @ApiResponse(ApiNotSucessResponseHelper())

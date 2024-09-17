@@ -104,7 +104,6 @@ export class TimerGateway implements OnGatewayDisconnect {
     timer.start({ countdown: true, startValues: { seconds: payload.duration } });
 
     timer.addEventListener('secondsUpdated', () => {
-      console.log('secondsUpdated', timer.getTotalTimeValues().seconds, 'to', payload.eventId);
       this.server.to(payload.eventId).emit('timerUpdate',
         {
           remainingTime: timer.getTotalTimeValues().seconds,
@@ -115,26 +114,23 @@ export class TimerGateway implements OnGatewayDisconnect {
     });
 
     timer.addEventListener('targetAchieved', async () => {
-
-      let event = await this.EventService.findOne(payload.eventId)
-      if(event) {
+      try {
+        let event = await this.EventService.findOne(payload.eventId);
         let slots = event.slots.sort((a, b) => a.sortOrder - b.sortOrder);
         let currentSlotIndex = slots.findIndex(slot => slot._id.toString() === runningSlotId);
         let nextSlot = slots[currentSlotIndex + 1];
-
-        console.log(nextSlot.startTimeType)
-        if(nextSlot.startTimeType == 'linked') {
+        
+        if(nextSlot?.startTimeType == 'linked') {
           runningSlotId = nextSlot._id.toString();
           timer.start({ countdown: true, startValues: { seconds: parseInt(nextSlot.duration) } });
         } else {
           this.server.to(payload.eventId).emit('timerCompleted');
           this.clearTimer(payload.eventId);
         }
-
+      } catch (error) {
+        console.error('Error fetching event:', error);
       }
-
     });
-
   }
 
   @SubscribeMessage('pause')
