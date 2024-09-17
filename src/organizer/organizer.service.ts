@@ -5,6 +5,7 @@ import { Model } from "mongoose";
 import { CreateOrganzierDto } from "./dto/create-organizer.dto";
 import { UpdateOrgainzerDto } from "./dto/update-organizer.dto";
 import { EventService } from "src/events/events.service";
+import { Appearance, StartTimeType } from "src/slots/enums/slot.enums";
 
 @Injectable()
 export class OrganizerService {
@@ -13,12 +14,35 @@ export class OrganizerService {
     private eventService: EventService
   ) {}
 
+  private defaultSlot: any = {
+    "tag": "Tag1",
+    "title": "Slot1",
+    "speaker": "Speaker1",
+    "notes": "Note1",
+    "appearance": Appearance.COUNTDOWN,
+    "startTimeType": StartTimeType.MANUAL,
+    "startTime": new Date(),
+    "duration": "3500",
+    "pauseTime": "3500",
+    "warningTime": "35",
+    "dangerTime": "5",
+    "warningColor": "yellow",
+    "dangerColor": "red",
+    "dangerSound": "danger",
+    "warningSound": "warning",
+    "flash": true,
+    "flashCount": 3,
+    "sortOrder": 0,
+    "status": "active",
+    "active": false
+  };
+
   async create(createOrganzierDto: CreateOrganzierDto) {
     const createdOrganizer = new this.OrganizerModel(createOrganzierDto);
 
     const event: any = await this.eventService.create({
-      title: 'Event created by ' + createdOrganizer.name,
-      slots: [],
+      title: 'Event 1',
+      slots: [this.defaultSlot],
       messages: []
     })
 
@@ -56,7 +80,7 @@ export class OrganizerService {
     const organizer = await this.OrganizerModel.findById(id).exec();
     const event: any = await this.eventService.create({
       title: payload.title,
-      slots: [],
+      slots: [this.defaultSlot],
       messages: []
     })
 
