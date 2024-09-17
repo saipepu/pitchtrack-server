@@ -104,6 +104,7 @@ export class TimerGateway implements OnGatewayDisconnect {
     timer.start({ countdown: true, startValues: { seconds: payload.duration } });
 
     timer.addEventListener('secondsUpdated', () => {
+      console.log(runningSlotId, 'runningSlotId')
       this.server.to(payload.eventId).emit('timerUpdate',
         {
           remainingTime: timer.getTotalTimeValues().seconds,
@@ -139,7 +140,7 @@ export class TimerGateway implements OnGatewayDisconnect {
     @MessageBody() payload: TimerTracker
   ) {
 
-    console.log('pause', payload.eventId);
+    console.log('pause', payload.slotId);
     const currentTimer = this.timers[payload.eventId];
     if (currentTimer) {
       currentTimer.timer.pause();
@@ -209,7 +210,6 @@ export class TimerGateway implements OnGatewayDisconnect {
       }
     }
 
-
   }
 
   private broadcastClientsInRoom(room: string) {
@@ -248,11 +248,13 @@ export class TimerGateway implements OnGatewayDisconnect {
   async acknowledgeRoomInfoUpdate(event: any, updatedCategory?: string) {         // EVERY TIME A SLOT IS UPDATED, WE NEED TO SEND THE UPDATED SLOTS TO ALL CLIENTS
 
     if(event) {
+      console.log('running slotId', this.timers[event._id.toString()]?.slotId)
       this.server.to(event._id.toString()).emit('onRoomInfoUpdate', 
         {
           success: true,
           message: event,
-          category: updatedCategory
+          category: updatedCategory,
+          runningSlotId: this.timers[event._id]?.slotId
         }
       );
     }

@@ -60,9 +60,7 @@ export class EventService {
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId, 'slots._id': slotId },
       {
-        $set: {
-          'slots.$': slotData,
-        },
+        $set: slotData,
       },
       { new: true }
     )
@@ -137,7 +135,6 @@ export class EventService {
 
   async updateMessage(eventId: string, messageId: string, messageData: UpdateMessageDto): Promise<Event> {
 
-    console.log(messageId, 'messageId')
     // set all messages to onDisplay = false
     await this.EventModel.updateMany(
       { },
@@ -148,9 +145,7 @@ export class EventService {
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId, 'messages._id': messageId },
       {
-        $set: {
-          'messages.$': messageData,
-        },
+        $set: messageData
       },
       { new: true }
     )
