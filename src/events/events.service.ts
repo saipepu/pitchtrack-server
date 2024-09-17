@@ -18,10 +18,10 @@ export class EventService {
     private socketService: TimerGateway,
   ) {}
 
-  async create(createEventDto: CreateEventDto): Promise<Event> {
-    const createdEvent = new this.EventModel(createEventDto);
-    return createdEvent.save();
-  }
+  // async create(createEventDto: CreateEventDto): Promise<Event> {
+  //   const createdEvent = new this.EventModel(createEventDto);
+  //   return createdEvent.save();
+  // }
 
   async findAll(): Promise<Event[]> {
     return this.EventModel.find().populate(['slots', 'messages']).exec();
