@@ -1,12 +1,14 @@
-import { ApiBearerAuth, ApiExtraModels, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Organizer } from "./schema/organizer.schema";
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { OrganizerService } from "./organizer.service";
 import { CreateOrganzierDto } from "./dto/create-organizer.dto";
 import { ApiNotSucessResponseHelper, ApiSuccessResponseHelper } from "src/helpers/swagger.helper";
 import { UpdateOrgainzerDto } from "./dto/update-organizer.dto";
+import { Public } from "src/common/decorators/public.decorator";
 
-@ApiBearerAuth('bearer-token')
+@Public()
+// @ApiBearerAuth('bearer-token')
 @ApiTags('Organizer')
 @ApiExtraModels(Organizer)
 @Controller('orgs')
@@ -55,7 +57,16 @@ export class OrganizerController {
 
   @ApiResponse(ApiSuccessResponseHelper(Organizer.name))
   @ApiResponse(ApiNotSucessResponseHelper())
-  @ApiOperation({ summary: 'Create an event as the organizer' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: {
+          type: 'string',
+        }
+      },
+    },
+  })
   @Post(':id/event')
   async createEvent(@Param('id') id: string, @Body() payload: any) {
     return this.organizerService.createEvent(id, payload);
