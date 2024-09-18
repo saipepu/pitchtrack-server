@@ -11,6 +11,8 @@ import { AllExceptionsFilter } from 'src/filters/all-exceptions.filter';
   imports: [MongooseModule.forFeature([{ name: 'Slot', schema: SlotSchema }])],
   controllers: [],
   providers: [SlotService,
+    // I THINK ALL THIS PROVIDERS SHOULD BE IN THE APP MODULE
+    // CUZ THEY ARE GLOBAL ANYWAY RIGHT?
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor

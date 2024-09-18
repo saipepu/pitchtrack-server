@@ -48,7 +48,7 @@ export class EventService {
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     console.log('added slot')
     this.socketService.acknowledgeRoomInfoUpdate(eventWithNewSlot, 'Syncing new slot');
 
@@ -57,17 +57,23 @@ export class EventService {
 
   async updateSlot(eventId: string, slotId: string, slotData: UpdateSlotDto): Promise<Event> {
 
+    // CREATING A NEW OBJECT WITH THE FIELDS TO UPDATE
+    const updateFields = {};
+    Object.keys(slotData).forEach(key => {
+      updateFields[`slots.$.${key}`] = slotData[key];
+    });
+
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId, 'slots._id': slotId },
       {
-        $set: slotData,
+        $set: updateFields
       },
       { new: true }
     )
       .populate(['slots', 'messages'])
       .exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     this.socketService.acknowledgeRoomInfoUpdate(event, 'slot info');
   
     return event;
@@ -99,7 +105,7 @@ export class EventService {
   
     const eventWithNewSlotOrder = await this.EventModel.findById(eventId).populate(['slots', 'messages']).exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     this.socketService.acknowledgeRoomInfoUpdate(eventWithNewSlotOrder, 'slot order');
 
     return eventWithNewSlotOrder;
@@ -114,7 +120,7 @@ export class EventService {
       .populate(['slots', 'messages'])
       .exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     this.socketService.acknowledgeRoomInfoUpdate(event, 'slot deletion');
   
     return event;
@@ -127,7 +133,7 @@ export class EventService {
       { new: true }
     ).populate(['slots', 'messages']).exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     this.socketService.acknowledgeRoomInfoUpdate(event, 'new message');
 
     return event;
@@ -135,24 +141,32 @@ export class EventService {
 
   async updateMessage(eventId: string, messageId: string, messageData: UpdateMessageDto): Promise<Event> {
 
-    // set all messages to onDisplay = false
+    console.log(messageData.onDisplay)
+
+    // CREATING A NEW OBJECT WITH THE FIELDS TO UPDATE
+    const updateFields = {};
+    Object.keys(messageData).forEach(key => {
+      updateFields[`messages.$.${key}`] = messageData[key];
+    });
+
+    // SET ALL MESSAGE ONDISPLAY TO FALSE
     await this.EventModel.updateMany(
       { },
-      { $set: { onDisplay: false } },
+      { $set: { "messages.$[].onDisplay": false } },
       { new: true }
     )
 
     const event = await this.EventModel.findOneAndUpdate(
       { _id: eventId, 'messages._id': messageId },
       {
-        $set: messageData
+        $set: updateFields
       },
       { new: true }
     )
       .populate(['slots', 'messages'])
       .exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     this.socketService.acknowledgeRoomInfoUpdate(event, 'message info');
   
     return event;
@@ -167,7 +181,7 @@ export class EventService {
       .populate(['slots', 'messages'])
       .exec();
 
-    // emit socket event
+    // EMIT SOCKET EVENT
     this.socketService.acknowledgeRoomInfoUpdate(event, 'message deletion');
   
     return event;
