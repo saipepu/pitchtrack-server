@@ -4,6 +4,7 @@ import Timer, { TimerValues } from 'easytimer.js';
 import { forwardRef, Inject, Injectable, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IsNotEmpty} from 'class-validator';
 import { EventService } from 'src/events/events.service';
+import { Message } from 'src/messages/schemas/message.schema';
 
 class TimerTracker {
   @IsNotEmpty()
@@ -14,6 +15,14 @@ class TimerTracker {
 
   @IsNotEmpty()
   readonly slotId: string;
+}
+
+class MessageHandler {
+  @IsNotEmpty()
+  readonly eventId: string;
+  
+  @IsNotEmpty()
+  readonly message: Message;
 }
 
 class Event {
@@ -77,7 +86,7 @@ export class TimerGateway implements OnGatewayDisconnect {
                 remainingTime: timer.timer.getTotalTimeValues().seconds,
                 eventId: payload.eventId,
                 slotId: timer.slotId,
-                isRunning: false
+                isRunning: false // IN CASE THE TIMER IS NOT RUNNING, THE SOCKET HAS TO TELL WHICH TIMER IS OR SLOT WAS PAUSED
               });
           }, 1000)
 
@@ -210,6 +219,15 @@ export class TimerGateway implements OnGatewayDisconnect {
       }
     }
 
+  }
+
+  @SubscribeMessage('toggleMessageDisplay')
+  async handleToggleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: MessageHandler
+  ) {
+    console.log(payload)
+    this.server.to(payload.eventId).emit('updateMessageToggle', payload.message);
   }
 
   private broadcastClientsInRoom(room: string) {
