@@ -103,6 +103,18 @@ export class EventService {
       await this.EventModel.bulkWrite(bulkOperations);
     }
   
+    let updatedEvent = await this.EventModel.findById(eventId).populate(['slots', 'messages']).exec();
+    
+    // RESET THE FIRST SLOT START TIME TYPE TO BE MANUAL
+    // CUZ IF THE REORDERED SLOT IS A LINKED START TIME TYPE, IT WILL HAVE NO ONE TO LINKED TO
+    if (updatedEvent.slots.length > 0) {
+      await this.EventModel.updateOne(
+        { _id: eventId, 'slots.sortOrder': 0 },
+        { $set: { 'slots.$.startTimeType': 'manual' } },
+        { new: true }
+      );
+    }
+
     const eventWithNewSlotOrder = await this.EventModel.findById(eventId).populate(['slots', 'messages']).exec();
 
     // EMIT SOCKET EVENT

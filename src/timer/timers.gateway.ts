@@ -221,6 +221,47 @@ export class TimerGateway implements OnGatewayDisconnect {
 
   }
 
+  @SubscribeMessage('playNextSlot')
+  async handleSkipToNext(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Event
+  ) {
+    // skip to next slot
+    const currentTimer = this.timers[payload.eventId];
+    let event = await this.EventService.findOne(payload.eventId);
+
+    if(event) {
+      let currentSlot = event.slots.find((slot, index) => slot._id.toString() === currentTimer.slotId);
+      let nextSlot = event.slots.find((slot, index) => slot.sortOrder === currentSlot.sortOrder + 1);
+
+      if(nextSlot) {
+        currentTimer.timer.stop();
+        this.handleStartTimer(client, { duration: parseInt(nextSlot.duration), eventId: payload.eventId, slotId: nextSlot._id.toString() });
+      }
+    }
+  }
+
+  @SubscribeMessage('playPreviousSlot')
+  async handleSkipToPrevious(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Event
+  ) {
+    console.log('playPreviousSlot')
+    // skip to previous slot
+    const currentTimer = this.timers[payload.eventId];
+    let event = await this.EventService.findOne(payload.eventId);
+
+    if(event) {
+      let currentSlot = event.slots.find((slot, index) => slot._id.toString() === currentTimer.slotId);
+      let previousSlot = event.slots.find((slot, index) => slot.sortOrder === currentSlot.sortOrder - 1);
+
+      if(previousSlot) {
+        currentTimer.timer.stop();
+        this.handleStartTimer(client, { duration: parseInt(previousSlot.duration), eventId: payload.eventId, slotId: previousSlot._id.toString() });
+      }
+    }
+  }
+
   @SubscribeMessage('toggleMessageDisplay')
   async handleToggleMessage(
     @ConnectedSocket() client: Socket,
