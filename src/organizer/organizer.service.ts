@@ -339,7 +339,9 @@ export class OrganizerService {
   }
 
   async updateOrganizer(id: string, updateOrgainzerDto: UpdateOrgainzerDto) {
-    return await this.OrganizerModel.findByIdAndUpdate(id, updateOrgainzerDto, {new: true}).exec();
+    console.log(updateOrgainzerDto)
+    await this.OrganizerModel.findByIdAndUpdate(id, updateOrgainzerDto, {new: true}).exec();
+    return await this.OrganizerModel.findById(id).populate('events').exec();
   }
 
   async deleteOrganizer(id: string) {
@@ -359,6 +361,21 @@ export class OrganizerService {
     })
 
     organizer.events.push(event._id);
+    return organizer.save();
+  }
+
+  async cloneEvent(id: string, eventId: string) {
+    const organizer = await this.OrganizerModel.findById(id).exec();
+    const event: any = await this.eventService.clone(eventId);
+
+    organizer.events.push(event._id);
+    return organizer.save();
+  }
+
+  async deleteEvent(id: string, eventId: string) {
+    const organizer = await this.OrganizerModel.findById(id).exec();
+    organizer.events = organizer.events.filter((event: any) => event.toString() !== eventId);
+    await this.eventService.delete(eventId);
     return organizer.save();
   }
 

@@ -5,7 +5,9 @@ import { Slot } from 'src/slots/schemas/slot.schema';
 import { Message } from 'src/messages/schemas/message.schema';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class Event {
   @ApiProperty({ example: "Event1"})
   @Prop({ required: true })

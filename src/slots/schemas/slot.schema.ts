@@ -3,7 +3,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Appearance, StartTimeType } from '../enums/slot.enums';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class Slot {
   _id: string;
 
@@ -81,6 +83,10 @@ export class Slot {
   @ApiProperty({ example: false })
   @Prop({ required: true })
   active: boolean;
+
+  @ApiProperty({ example: '2024-08-15T12:40:40.000+07:00' })
+  @Prop()
+  transitionTime: string;
 
 }
 

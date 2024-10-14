@@ -72,4 +72,20 @@ export class OrganizerController {
     return this.organizerService.createEvent(id, payload);
   }
 
+  // CLONE EVENT
+  @ApiResponse(ApiSuccessResponseHelper(Organizer.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @Post(':id/event/:eventId/clone')
+  async cloneEvent(@Param('id') id: string, @Param('eventId') eventId: string) {
+    return this.organizerService.cloneEvent(id, eventId);
+  }
+
+  // DELETE EVENT
+  @ApiResponse(ApiSuccessResponseHelper(Organizer.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @Delete(':id/event/:eventId')
+  async deleteEvent(@Param('id') id: string, @Param('eventId') eventId: string) {
+    return this.organizerService.deleteEvent(id, eventId);
+  }
+
 }

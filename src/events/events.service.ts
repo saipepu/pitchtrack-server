@@ -23,6 +23,19 @@ export class EventService {
     return createdEvent.save();
   }
 
+  async clone(id: string): Promise<Event> {
+    const event = await this.EventModel.findById(id).exec();
+    if (!event) throw new Error('Event not found');
+
+    const newEvent = new this.EventModel({
+      title: event.title + ' (copy)',
+      slots: event.slots,
+      messages: event.messages,
+    });
+
+    return newEvent.save();
+  }
+
   async findAll(): Promise<Event[]> {
     return this.EventModel.find().populate(['slots', 'messages']).exec();
   }
@@ -77,6 +90,35 @@ export class EventService {
     this.socketService.acknowledgeRoomInfoUpdate(event, 'slot info');
   
     return event;
+  }
+
+  async cloneSlot(eventId: string, slotId: string): Promise<Event> {
+    const event = await this.EventModel.findById(eventId).exec();
+    if (!event) throw new Error('Event not found');
+
+    const slot: any = event.slots.find(slot => slot._id.toString() === slotId);
+    if (!slot) throw new Error('Slot not found');
+
+    const newSlot = { ...slot.toObject(), _id: undefined, sortOrder: slot.sortOrder + 1 };
+    // increment the sortOrder of all slots after the cloned slot
+    event.slots.forEach(slot => {
+      if (slot.sortOrder >= newSlot.sortOrder) {
+        slot.sortOrder += 1;
+      }
+    });
+
+    event.save()
+
+    const eventWithNewSlot = await this.EventModel.findByIdAndUpdate(
+      eventId,
+      { $push: { slots: newSlot }},
+      { new: true }
+    ).populate(['slots', 'messages']).exec();
+
+    // EMIT SOCKET EVENT
+    this.socketService.acknowledgeRoomInfoUpdate(eventWithNewSlot, 'Syncing new slot');
+
+    return eventWithNewSlot;
   }
 
   async reorderSlots(eventId: string, newOrder: string[]): Promise<Event> {
