@@ -22,7 +22,7 @@ export class OrganizerService {
       "speaker": "All Teams",
       "notes": "Senior Projects I & II Exhibition",
       "appearance": Appearance.COUNTDOWN,
-      "startTimeType": StartTimeType.LINKED,
+      "startTimeType": StartTimeType.MANUAL,
       "startTime": new Date(),
       "duration": "20",
       "pauseTime": "0",

@@ -64,6 +64,14 @@ export class EventController {
   ) {
     return this.EventService.updateSlot(eventId, slotId, slot);
   }
+
+  // UPDATE ALL SLOT
+  @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
+  @ApiResponse(ApiNotSucessResponseHelper())
+  @Put(':eventId/slots')
+  updateAllSlot(@Param('eventId') id: string, @Body() slots: UpdateSlotDto[]) {
+    return this.EventService.updateAllSlot(id, slots);
+  }
   
   // CLONE SLOT
   @ApiResponse(ApiSuccessResponseHelper(CreateEventDto.name))
