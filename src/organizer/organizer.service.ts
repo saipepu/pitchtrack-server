@@ -18,7 +18,7 @@ export class OrganizerService {
   private testSlots: any[] = [
     {
       "tag": "timeslot",
-      "title": "Slot One",
+      "title": "Slot 1",
       "speaker": "All Teams",
       "notes": "Senior Projects I & II Exhibition",
       "appearance": Appearance.COUNTDOWN,
@@ -40,7 +40,7 @@ export class OrganizerService {
     },
     {
       "tag": "timeslot",
-      "title": "Slot Two",
+      "title": "Slot 2",
       "speaker": "All Teams",
       "notes": "Senior Projects I & II Exhibition",
       "appearance": Appearance.COUNTDOWN,
@@ -62,7 +62,7 @@ export class OrganizerService {
     },
     {
       "tag": "timeslot",
-      "title": "Slot Three",
+      "title": "Slot 3",
       "speaker": "All Teams",
       "notes": "Senior Projects I & II Exhibition",
       "appearance": Appearance.COUNTDOWN,

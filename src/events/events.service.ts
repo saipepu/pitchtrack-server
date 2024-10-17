@@ -55,8 +55,9 @@ export class EventService {
     const event = await this.EventModel.findById(id).populate('slots').exec();
 
     const newOrder = event.slots.length > 0 ? Math.max(...event.slots.map(slot => slot.sortOrder)) + 1 : 0;
+    const increasedSlotName = event.slots.length > 0 ? Math.max(...event.slots.map(slot => slot.sortOrder)) + 1 : 0;
 
-    const slotWithOrder = { ...slotData, sortOrder: newOrder };
+    const slotWithOrder = { ...slotData, sortOrder: newOrder, title: `Slot ${increasedSlotName + 1}` };
 
     const eventWithNewSlot = await this.EventModel.findByIdAndUpdate(
       id,
@@ -89,15 +90,15 @@ export class EventService {
       .populate(['slots', 'messages'])
       .exec();
 
-    // EMIT SOCKET EVENT
-    this.socketService.acknowledgeRoomInfoUpdate(event, 'slot info');
-
     if(slotData.startTimeType === 'scheduled') {
       console.log(slotData.startTime)
-      this.scheduleTask(eventId, slotId, slotData.startTime.toISOString(), slotData.duration);
+      this.socketService.scheduleTask(eventId, slotId, slotData.startTime.toISOString(), slotData.duration, this.socketService.handleStartTimer);
     } else {
       this.removeTask(slotId);
     }
+
+    // EMIT SOCKET EVENT
+    this.socketService.acknowledgeRoomInfoUpdate(event, 'slot info');
   
     return event;
   }
@@ -248,36 +249,6 @@ export class EventService {
     this.socketService.acknowledgeRoomInfoUpdate(event, 'message info');
   
     return event;
-  }
-
-  scheduleTask(eventId: string, slotId: string, startTime: string, duration) {
-    const date = new Date(startTime);
-
-    const seconds = date.getSeconds();
-    const minutes = date.getMinutes();
-    const hours = date.getHours();
-    const dayOfMonth = date.getDate();
-    const month = date.getMonth() + 1; // Months are 0-indexed
-    const dayOfWeek = '*'; // Run every day of the week
-
-    // Create a new cron expression
-    const cronExpression = `${seconds} ${minutes} ${hours} ${dayOfMonth} ${month} ${dayOfWeek}`;
-
-    // Schedule the task
-    const task = cron.schedule(cronExpression, () => {
-      console.log(`Scheduled task [${slotId}] running at: ${new Date()}`);
-      // Add your task logic here
-
-      // EMIT SOCKET EVENT
-      const payload = { eventId, slotId, duration: duration }; // Adjust the duration as needed
-      this.socketService.handleStartTimer(null, payload); // Pass null for the client parameter
-
-    });
-
-    this.tasks[slotId] = task; // Store task by ID
-    task.start();
-
-    console.log(Object.keys(this.tasks).length);
   }
 
   // --------------------- //// ---- DANGER ZONE ---- //// --------------------- //
